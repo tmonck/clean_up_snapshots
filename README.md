@@ -1,8 +1,8 @@
 ## Installation instructions:
 
 1. Install HACS for Home Assistant
-2. Go to Community-Store-CleanUp-Snapshots
-3. Install CleanUp-Snapshots
+2. Add this repo as a custom repository
+3. Install
 4. Restart Home Assistant
 5. Generate a Long Lived Token
     1. Navigate to your profile page.
