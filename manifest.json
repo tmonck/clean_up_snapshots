@@ -1,0 +1,8 @@
+{
+    "domain": "clean_up_backs_service",
+    "name": "Clean up your snapshots",
+    "documentation": "https://github.com/tmonck/clean_up_snapshots",
+    "dependencies": [],
+    "codeowners": [],
+    "requirements": []
+  }
