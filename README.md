@@ -13,7 +13,7 @@
 5. Copy resulting token input this in configuration.yaml:
 
 ```yaml
-clean_up_backups_service:
+clean_up_snapshots_service:
   host: {{the url to access your homeassistant instance}}
   token: {{Long-Lived Access token}}
   number_of_backups_to_keep: 3
@@ -32,7 +32,7 @@ trigger:
   at: '03:00:00'
 condition:
 action:
-  - service: clean_up_backups_service.clean_up
+  - service: clean_up_snapshots_service.clean_up
     # Data is optional if you have defined the number of snapshots to keep in the configuration.yaml.
     # data:
       # If this property is passed to the service it will be used regardless of what you have in the configuration.yaml

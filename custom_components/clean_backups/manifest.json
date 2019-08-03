@@ -1,5 +1,5 @@
 {
-    "domain": "clean_up_backs_service",
+    "domain": "clean_up_snapshots_service",
     "name": "Clean up your snapshots",
     "documentation": "https://github.com/tmonck/clean_up_snapshots",
     "dependencies": [],

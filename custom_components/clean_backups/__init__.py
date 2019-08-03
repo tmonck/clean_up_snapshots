@@ -17,8 +17,8 @@ import voluptuous as vol
 
 _LOGGER = logging.getLogger(__name__)
 
-DOMAIN = 'clean_up_backups_service'
-ATTR_NAME = 'number_of_backups_to_keep'
+DOMAIN = 'clean_up_snapshots_service'
+ATTR_NAME = 'number_of_snapshots_to_keep'
 DEFAULT_NUM = 0
 
 CONFIG_SCHEMA = vol.Schema({
@@ -31,8 +31,7 @@ CONFIG_SCHEMA = vol.Schema({
 
 async def async_setup(hass, config):
     conf = config[DOMAIN]
-    # hassio_url = '{}/api/hassio/'.format(conf.get(CONF_HOST))
-    hassio_url = 'https://10.0.0.18:8123/api/hassio/'
+    hassio_url = '{}/api/hassio/'.format(conf.get(CONF_HOST))
     auth_token = conf.get(CONF_TOKEN)
     num_snapshots_to_keep = conf.get(ATTR_NAME, DEFAULT_NUM)
     headers = {'authorization': "Bearer {}".format(auth_token)}
