@@ -16,7 +16,7 @@
 clean_up_snapshots_service:
   host: {{the url to access your homeassistant instance}}
   token: {{Long-Lived Access token}}
-  number_of_backups_to_keep: 3
+  number_of_snapshots_to_keep: 3
 ```
 
 7. Restart Home Assistant
