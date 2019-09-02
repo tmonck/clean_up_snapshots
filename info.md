@@ -1,16 +1,17 @@
 ## Installation instructions:
 
 1. Install HACS for Home Assistant
-2. Add this repo as a custom repository
-3. Install
-4. Restart Home Assistant
-5. Generate a Long Lived Token
+2. Navigate to HACS Store
+3. Search for "Clean up your snapshots"
+4. Install
+5. Restart Home Assistant
+6. Generate a Long Lived Token
     1. Navigate to your profile page.
     1. At the bottom of the page you will see a section called Long-Lived Access Tokens.
     1. Click create.
     1. In the pop up give your token a name.
     1. Copy the token from the following pop up **This will not be saved anywhere so put it somehwere you can find it again**
-5. Copy resulting token input this in configuration.yaml:
+7. Copy resulting token input this in configuration.yaml:
 
 ```yaml
 clean_up_snapshots_service:
@@ -19,8 +20,8 @@ clean_up_snapshots_service:
   number_of_snapshots_to_keep: 3
 ```
 
-7. Restart Home Assistant
-8. Look for the new daily_event.notify Services in services.
+8. Restart Home Assistant
+9. Look for the new daily_event.notify Services in services.
 
 ## Consumption in automations
 You can trigger this service in an automation similarly to the one below.
@@ -39,4 +40,4 @@ action:
       # number_of_backups_to_keep: 7
 ```
 ---
-[![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/custom-components/hacs)
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
