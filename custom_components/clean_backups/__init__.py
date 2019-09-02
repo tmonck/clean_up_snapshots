@@ -102,15 +102,18 @@ async def async_setup(hass, config):
         _LOGGER.info('Snapshots: %s', snapshots) 
 
         # filter the snapshots
-        for snapshot in snapshots:
-            d = parse(snapshot["date"])
-            if d.tzinfo is None or d.tzinfo.utcoffset(d) is None:
-                _LOGGER.info("Naive DateTime found for snapshot %s, setting to UTC...", snapshot["slug"])
-                snapshot["date"] = d.replace(tzinfo=pytz.utc).isoformat()
-        snapshots.sort(key=lambda item: parse(item["date"]), reverse=True)
-        stale_snapshots = snapshots[num_to_keep:]
-        _LOGGER.info('Stale Snapshots: {}'.format(stale_snapshots))
-        await async_remove_snapshots(stale_snapshots)
+        if snapshots is not None:
+            for snapshot in snapshots:
+                d = parse(snapshot["date"])
+                if d.tzinfo is None or d.tzinfo.utcoffset(d) is None:
+                    _LOGGER.info("Naive DateTime found for snapshot %s, setting to UTC...", snapshot["slug"])
+                    snapshot["date"] = d.replace(tzinfo=pytz.utc).isoformat()
+            snapshots.sort(key=lambda item: parse(item["date"]), reverse=True)
+            stale_snapshots = snapshots[num_to_keep:]
+            _LOGGER.info('Stale Snapshots: {}'.format(stale_snapshots))
+            await async_remove_snapshots(stale_snapshots)
+        else:
+            _LOGGER.info('No snapshots found.')
 
     hass.services.async_register(DOMAIN, 'clean_up', async_handle_clean_up)
 
