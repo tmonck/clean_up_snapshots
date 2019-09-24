@@ -21,7 +21,7 @@ clean_up_snapshots_service:
 ```
 
 8. Restart Home Assistant
-9. Look for the new daily_event.notify Services in services.
+9. Look for the new clean_up_snapshots_service.clean_up Services in services.
 
 ## Consumption in automations
 You can trigger this service in an automation similarly to the one below.
