@@ -10,7 +10,6 @@ import aiohttp
 import async_timeout
 from urllib.parse import urlparse
 
-
 from homeassistant.const import (CONF_HOST, CONF_TOKEN)
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
@@ -41,7 +40,7 @@ async def async_setup(hass, config):
         async with aiohttp.ClientSession(raise_for_status=True) as session:
             try:
                 with async_timeout.timeout(10, loop=hass.loop):
-                    resp = await session.get(hassio_url + 'snapshots', headers=headers, ssl=not isgoodipv4(urlparse(hassio_url).netloc))
+                    resp = await session.get(hassio_url + 'snapshots', headers=headers, ssl=hassio_url)
                 data = await resp.json()
                 await session.close()
                 return data['data']['snapshots']
@@ -51,7 +50,7 @@ async def async_setup(hass, config):
             except asyncio.TimeoutError:
                 _LOGGER.error("Client timeout error on get snapshots", exc_info=True)
                 await session.close()
-            except Exception: 
+            except Exception:
                 _LOGGER.error("Unknown exception thrown", exc_info=True)
                 await session.close()
 
@@ -71,17 +70,27 @@ async def async_setup(hass, config):
                     else:
                         # log an error
                         _LOGGER.warning("Failed to delete snapshot %s: %s", snapshot["slug"], str(res.status_code))
-            
+
                 except aiohttp.ClientError:
                     _LOGGER.error("Client error on calling delete snapshot", exc_info=True)
                     await session.close()
                 except asyncio.TimeoutError:
                     _LOGGER.error("Client timeout error on delete snapshot", exc_info=True)
                     await session.close()
-                except Exception: 
+                except Exception:
                     _LOGGER.error("Unknown exception thrown on calling delete snapshot", exc_info=True)
                     await session.close()
-    
+
+    def useSsl(url):
+        # Parse the url
+        urlPieces = urlparse(url)
+
+        # Check if the url is an ip address
+        result = not isgoodipv4(urlPieces.netloc)
+
+        # If url is not an ip address then check
+        return result or url.scheme == "https"
+
     def isgoodipv4(s):
         if ':' in s: s = s.split(':')[0]
         pieces = s.split('.')
@@ -99,7 +108,7 @@ async def async_setup(hass, config):
             return
 
         snapshots = await async_get_snapshots()
-        _LOGGER.info('Snapshots: %s', snapshots) 
+        _LOGGER.info('Snapshots: %s', snapshots)
 
         # filter the snapshots
         if snapshots is not None:
