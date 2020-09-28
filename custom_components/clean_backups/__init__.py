@@ -99,7 +99,8 @@ async def async_setup(hass, config):
             return False
         try:
             return all(0<=int(p)<256 for p in pieces)
-        except ValueError: return False
+        except ValueError:
+            return False
 
     async def async_handle_clean_up(call):
         # Allow the service call override the configuration.
