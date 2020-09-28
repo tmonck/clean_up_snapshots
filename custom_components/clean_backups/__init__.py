@@ -40,7 +40,7 @@ async def async_setup(hass, config):
         async with aiohttp.ClientSession(raise_for_status=True) as session:
             try:
                 with async_timeout.timeout(10, loop=hass.loop):
-                    resp = await session.get(hassio_url + 'snapshots', headers=headers, ssl=hassio_url)
+                    resp = await session.get(hassio_url + 'snapshots', headers=headers, ssl=useSsl(hassio_url))
                 data = await resp.json()
                 await session.close()
                 return data['data']['snapshots']
