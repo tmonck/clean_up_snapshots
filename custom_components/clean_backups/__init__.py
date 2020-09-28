@@ -92,10 +92,13 @@ async def async_setup(hass, config):
         return result or url.scheme == "https"
 
     def isgoodipv4(s):
-        if ':' in s: s = s.split(':')[0]
+        if ':' in s:
+            s = s.split(':')[0]
         pieces = s.split('.')
-        if len(pieces) != 4: return False
-        try: return all(0<=int(p)<256 for p in pieces)
+        if len(pieces) != 4:
+            return False
+        try:
+            return all(0<=int(p)<256 for p in pieces)
         except ValueError: return False
 
     async def async_handle_clean_up(call):
