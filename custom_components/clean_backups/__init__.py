@@ -89,7 +89,7 @@ async def async_setup(hass, config):
         result = not isgoodipv4(urlPieces.netloc)
 
         # If url is not an ip address then check
-        return result or url.scheme == "https"
+        return result or urlPieces.scheme == "https"
 
     def isgoodipv4(s):
         if ':' in s:
