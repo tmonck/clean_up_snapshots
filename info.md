@@ -2,7 +2,7 @@
 
 1. Install HACS for Home Assistant
 2. Navigate to HACS Store
-3. Search for "Clean up your snapshots"
+3. Search for "Clean up snapshots service"
 4. Install
 5. Restart Home Assistant
 6. Generate a Long Lived Token
