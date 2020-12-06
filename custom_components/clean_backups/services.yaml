@@ -3,4 +3,4 @@ clean_up:
   fields:
     number_of_snapshots_to_keep:
       description: Number of snapshots you wish to keep.
-      examle: 3
+      example: 3
