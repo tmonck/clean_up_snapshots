@@ -87,6 +87,7 @@ async def async_setup(hass, config):
     def shouldVerifySsl(url):
         '''
         This method is used to determine if we want to verify SSL certs
+        https://docs.aiohttp.org/en/stable/client_advanced.html#ssl-control-for-tcp-sockets
         By default if you are using an IP Address we will not verify the SSL request.
         This can be overriden using the use_ssl_with_ip_address in the configuration for this component.
         '''
