@@ -40,7 +40,7 @@ async def async_setup(hass, config):
         async with aiohttp.ClientSession(raise_for_status=True) as session:
             try:
                 with async_timeout.timeout(10, loop=hass.loop):
-                    resp = await session.get(hassio_url + 'snapshots', headers=headers, ssl=useSsl(hassio_url))
+                    resp = await session.get(hassio_url + 'snapshots', headers=headers, ssl=urlparse(hassio_url).scheme == "https")
                 data = await resp.json()
                 await session.close()
                 return data['data']['snapshots']
@@ -61,7 +61,7 @@ async def async_setup(hass, config):
                 # call hassio API deletion
                 try:
                     with async_timeout.timeout(10, loop=hass.loop):
-                        resp = await session.post(hassio_url + 'snapshots/' + snapshot['slug'] + "/remove", headers=headers, ssl=not isgoodipv4(urlparse(hassio_url).netloc))
+                        resp = await session.post(hassio_url + 'snapshots/' + snapshot['slug'] + "/remove", headers=headers, ssl=urlparse(hassio_url).scheme == "https")
                     res = await resp.json()
                     if res['result'].lower() == "ok":
                         _LOGGER.info("Deleted snapshot %s", snapshot["slug"])
@@ -80,27 +80,6 @@ async def async_setup(hass, config):
                 except Exception:
                     _LOGGER.error("Unknown exception thrown on calling delete snapshot", exc_info=True)
                     await session.close()
-
-    def useSsl(url):
-        # Parse the url
-        urlPieces = urlparse(url)
-
-        # Check if the url is an ip address
-        result = not isgoodipv4(urlPieces.netloc)
-
-        # If url is not an ip address then check
-        return result or urlPieces.scheme == "https"
-
-    def isgoodipv4(s):
-        if ':' in s:
-            s = s.split(':')[0]
-        pieces = s.split('.')
-        if len(pieces) != 4:
-            return False
-        try:
-            return all(0<=int(p)<256 for p in pieces)
-        except ValueError:
-            return False
 
     async def async_handle_clean_up(call):
         # Allow the service call override the configuration.
