@@ -2,26 +2,27 @@
 
 1. Install HACS for Home Assistant
 2. Navigate to HACS Store
-3. Search for "Clean up your snapshots"
-4. Install
-5. Restart Home Assistant
-6. Generate a Long Lived Token
-    1. Navigate to your profile page.
+3. Under the Integrations tab, click the add button (the one with a plus sign)
+4. Search for "Clean up snapshots service"
+5. Click on the service, and then on _Install this repository in HACS_
+6. Restart Home Assistant (Configuration > Server Controls > Restart)
+7. Generate a Long Lived Token
+    1. Navigate to your [profile page](https://www.home-assistant.io/docs/authentication/#your-account-profile).
     1. At the bottom of the page you will see a section called Long-Lived Access Tokens.
-    1. Click create.
+    1. Click _Create token_.
     1. In the pop up give your token a name.
-    1. Copy the token from the following pop up **This will not be saved anywhere so put it somehwere you can find it again**
-7. Copy resulting token input this in configuration.yaml:
+    1. Copy the token from the following pop up **This will not be saved anywhere so put it somewhere you can find it again**
+8. Copy resulting token input this in configuration.yaml:
 
-```yaml
-clean_up_snapshots_service:
-  host: {{the url to access your homeassistant instance}}
-  token: {{Long-Lived Access token}}
-  number_of_snapshots_to_keep: 3
-```
+   ```yaml
+   clean_up_snapshots_service:
+     host: {{the url to access your homeassistant instance}}
+     token: {{Long-Lived Access token}}
+     number_of_snapshots_to_keep: 3
+   ```
 
-8. Restart Home Assistant
-9. Look for the new clean_up_snapshots_service.clean_up Services in services.
+9. Restart Home Assistant (Configuration > Server Controls > Restart)
+10. Look for the new `clean_up_snapshots_service.clean_up` service (Developer Tools > Services).
 
 ## Consumption in automations
 You can trigger this service in an automation similarly to the one below.
