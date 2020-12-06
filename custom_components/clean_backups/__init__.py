@@ -18,23 +18,24 @@ _LOGGER = logging.getLogger(__name__)
 
 DOMAIN = 'clean_up_snapshots_service'
 ATTR_NAME = 'number_of_snapshots_to_keep'
+USE_SSL_IP = 'use_ssl_with_ip_addres'
 DEFAULT_NUM = 0
 
 CONFIG_SCHEMA = vol.Schema({
     DOMAIN: vol.Schema({
         vol.Required(CONF_HOST): cv.string,
         vol.Required(CONF_TOKEN): cv.string,
-        vol.Optional(ATTR_NAME, default=DEFAULT_NUM): int
+        vol.Optional(ATTR_NAME, default=DEFAULT_NUM): int,
+        vol.Optional(USE_SSL_IP, default=False): cv.boolean
     }),
 }, extra=vol.ALLOW_EXTRA)
 
 async def async_setup(hass, config):
     conf = config[DOMAIN]
-    base_url = conf.get(CONF_HOST)
-    api_path = 'api/hassio/'
-    hassio_url = "{base_url}/{api_path}" if (base_url[-1] != "/") else "{base_url}{api_path}"
+    hassio_url = '{}/api/hassio/'.format(conf.get(CONF_HOST))
     auth_token = conf.get(CONF_TOKEN)
     num_snapshots_to_keep = conf.get(ATTR_NAME, DEFAULT_NUM)
+    use_ssl_with_ip = conf.get(USE_SSL_IP, False)
     headers = {'authorization': "Bearer {}".format(auth_token)}
 
     async def async_get_snapshots():
@@ -42,7 +43,7 @@ async def async_setup(hass, config):
         async with aiohttp.ClientSession(raise_for_status=True) as session:
             try:
                 with async_timeout.timeout(10, loop=hass.loop):
-                    resp = await session.get(hassio_url + 'snapshots', headers=headers, ssl=urlparse(hassio_url).scheme == "https")
+                    resp = await session.get(hassio_url + 'snapshots', headers=headers, ssl=shouldVerifySsl(hassio_url))
                 data = await resp.json()
                 await session.close()
                 return data['data']['snapshots']
@@ -63,7 +64,7 @@ async def async_setup(hass, config):
                 # call hassio API deletion
                 try:
                     with async_timeout.timeout(10, loop=hass.loop):
-                        resp = await session.post(hassio_url + 'snapshots/' + snapshot['slug'] + "/remove", headers=headers, ssl=urlparse(hassio_url).scheme == "https")
+                        resp = await session.post(hassio_url + 'snapshots/' + snapshot['slug'] + "/remove", headers=headers, ssl=shouldVerifySsl(hassio_url))
                     res = await resp.json()
                     if res['result'].lower() == "ok":
                         _LOGGER.info("Deleted snapshot %s", snapshot["slug"])
@@ -82,6 +83,32 @@ async def async_setup(hass, config):
                 except Exception:
                     _LOGGER.error("Unknown exception thrown on calling delete snapshot", exc_info=True)
                     await session.close()
+
+    def shouldVerifySsl(url):
+        '''
+        This method is used to determine if we want to verify SSL certs
+        By default if you are using an IP Address we will not verify the SSL request.
+        This can be overriden using the use_ssl_with_ip_address in the configuration for this component.
+        '''
+        urlPieces = urlparse(url)
+
+        # Check if the url is an IP Address
+        if (isgoodipv4(urlPieces.netloc) and not use_ssl_with_ip):
+            return False
+
+        return urlPieces.scheme == "https"
+
+
+    def isgoodipv4(s):
+        if ':' in s:
+            s = s.split(':')[0]
+        pieces = s.split('.')
+        if len(pieces) != 4:
+            return False
+        try:
+            return all(0<=int(p)<256 for p in pieces)
+        except ValueError:
+            return False
 
     async def async_handle_clean_up(call):
         # Allow the service call override the configuration.
