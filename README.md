@@ -79,7 +79,8 @@ clean_up_snapshots_service:
   number_of_snapshots_to_keep: 3
   use_ssl_with_ip_address: True
 ```
-
+*Note* When using hassio as your domain you may need to have your url be hassio.lan:8123
+[See issue #12](https://github.com/tmonck/clean_up_snapshots/issues/12)
 ---
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
 
