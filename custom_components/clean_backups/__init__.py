@@ -32,7 +32,9 @@ CONFIG_SCHEMA = vol.Schema({
 
 async def async_setup(hass, config):
     conf = config[DOMAIN]
-    hassio_url = '{}/api/hassio/'.format(conf.get(CONF_HOST))
+    base_url = conf.get(CONF_HOST)
+    api_path = 'api/hassio/'
+    hassio_url = f"{base_url}/{api_path}" if (base_url[-1] != '/') else f"{base_url}{api_path}"
     auth_token = conf.get(CONF_TOKEN)
     num_snapshots_to_keep = conf.get(ATTR_NAME, DEFAULT_NUM)
     use_ssl_with_ip = conf.get(USE_SSL_IP, False)
