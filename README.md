@@ -13,13 +13,12 @@
     1. In the pop up give your token a name.
     1. Copy the token from the following pop up **This will not be saved anywhere so put it somewhere you can find it again**
 8. Copy resulting token input this in configuration.yaml:
-
-   ```yaml
-   clean_up_snapshots_service:
-     host: {{the url to access your homeassistant instance}}
-     token: {{Long-Lived Access token}}
-     number_of_snapshots_to_keep: 3
-   ```
+```yaml
+clean_up_snapshots_service:
+  host: !secret base_url
+  token: !secret clean_up_token
+  number_of_snapshots_to_keep: 3
+```
 
 9. Restart Home Assistant (Configuration > Server Controls > Restart)
 10. Look for the new `clean_up_snapshots_service.clean_up` service (Developer Tools > Services).
@@ -40,6 +39,48 @@ action:
       # If this property is passed to the service it will be used regardless of what you have in the configuration.yaml
       # number_of_backups_to_keep: 7
 ```
+
+## Configuration:
+When configuring this plugin you will need to define a few parameters.
+
+1. `host (Required)` - This is the url to access your home assisant instance. The url can have a trailing `/` if you desire. It can also be `https` or `http`
+   1. https://hassio:8123
+   1. https://hassio:8123/
+2. `token (Required)` - The Long-Lived Access token you generated during installation.
+3. `number_of_snapshots_to_keep (Optional - default value is 3)` - The number of snapshots you wish to retain.
+4. `use_ssl_with_ip_address (Optional - default value is False)` - If you wish to verify the SSL Certificate for your home assistant instance and you are using an IP Address for your url then you need to set this to `True`.
+
+### Example configurations
+
+``` yaml
+clean_up_snapshots_service:
+  host: !secret base_url
+  token: !secret clean_up_token
+  number_of_snapshots_to_keep: 3
+
+clean_up_snapshots_service:
+  host: "https://hassio:8123"
+  token: mytoken 
+  number_of_snapshots_to_keep: 3
+
+clean_up_snapshots_service:
+  host: http://hassio:8123
+  token: mytoken
+  number_of_snapshots_to_keep: 3
+ 
+clean_up_snapshots_service:
+  host: http://hassio:8123/
+  token: mytoken
+  number_of_snapshots_to_keep: 3
+
+clean_up_snapshots_service:
+  host: https://1.1.1.1:8123
+  token: mytoken
+  number_of_snapshots_to_keep: 3
+  use_ssl_with_ip_address: True
+```
+*Note* When using hassio as your domain you may need to have your url be hassio.lan:8123
+[See issue #12](https://github.com/tmonck/clean_up_snapshots/issues/12)
 ---
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
 
