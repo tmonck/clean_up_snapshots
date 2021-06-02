@@ -29,7 +29,7 @@ You can trigger this service in an automation similarly to the one below.
 ```yaml
 alias: Daily snapshot clean up
 initial_state: 'on'
-trigger: 
+trigger:
   platform: time
   at: '03:00:00'
 condition:
@@ -42,4 +42,3 @@ action:
 ```
 ---
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
-

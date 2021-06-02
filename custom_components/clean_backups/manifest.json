@@ -4,6 +4,6 @@
     "documentation": "https://github.com/tmonck/clean_up_snapshots",
     "dependencies": [],
     "codeowners": [],
-    "requirements": [].
-    "version": "0.8"
+    "requirements": [],
+    "version": "0.8.1"
   }

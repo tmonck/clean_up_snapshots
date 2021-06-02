@@ -42,7 +42,7 @@ You can trigger this service in an automation similarly to the one below.
 ```yaml
 alias: Daily snapshot clean up
 initial_state: 'on'
-trigger: 
+trigger:
   platform: time
   at: '03:00:00'
 condition:
@@ -74,14 +74,14 @@ clean_up_snapshots_service:
 
 clean_up_snapshots_service:
   host: "https://hassio:8123"
-  token: mytoken 
+  token: mytoken
   number_of_snapshots_to_keep: 3
 
 clean_up_snapshots_service:
   host: http://hassio:8123
   token: mytoken
   number_of_snapshots_to_keep: 3
- 
+
 clean_up_snapshots_service:
   host: http://hassio:8123/
   token: mytoken
