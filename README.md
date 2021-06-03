@@ -1,6 +1,7 @@
 # Clean up snapshots
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
+[![CI](https://github.com/tmonck/clean_up_snapshots/actions/workflows/ci.yml/badge.svg)](https://github.com/tmonck/clean_up_snapshots/actions/workflows/ci.yml)
 
 This Home Assistant extension exposes a service to automate the clean up of old snapshots.
 
