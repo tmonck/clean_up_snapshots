@@ -44,7 +44,7 @@ async def async_setup(hass, config):
         _LOGGER.info('Calling get snapshots')
         async with aiohttp.ClientSession(raise_for_status=True) as session:
             try:
-                with async_timeout.timeout(10, loop=hass.loop):
+                with async_timeout.timeout(10):
                     resp = await session.get(hassio_url + 'snapshots', headers=headers, ssl=shouldVerifySsl(hassio_url))
                 data = await resp.json()
                 await session.close()
@@ -65,7 +65,7 @@ async def async_setup(hass, config):
                 _LOGGER.info('Attempting to remove snapshot: slug=%s', snapshot['slug'])
                 # call hassio API deletion
                 try:
-                    with async_timeout.timeout(10, loop=hass.loop):
+                    with async_timeout.timeout(10):
                         resp = await session.post(hassio_url + 'snapshots/' + snapshot['slug'] + "/remove", headers=headers, ssl=shouldVerifySsl(hassio_url))
                     res = await resp.json()
                     if res['result'].lower() == "ok":
