@@ -59,8 +59,8 @@ action:
 When configuring this plugin you will need to define a few parameters.
 
 1. `host (Required)` - This is the url to access your home assisant instance. The url can have a trailing `/` if you desire. It can also be `https` or `http`
-   1. https://hassio:8123
-   1. https://hassio:8123/
+   1. https://supervisor:8123
+   1. https://supervisor:8123/
 2. `token (Required)` - The Long-Lived Access token you generated during installation.
 3. `number_of_snapshots_to_keep (Optional - default value is 3)` - The number of snapshots you wish to retain.
 4. `use_ssl_with_ip_address (Optional - default value is False)` - If you wish to verify the SSL Certificate for your home assistant instance and you are using an IP Address for your url then you need to set this to `True`.
@@ -74,17 +74,17 @@ clean_up_snapshots_service:
   number_of_snapshots_to_keep: 3
 
 clean_up_snapshots_service:
-  host: "https://hassio:8123"
+  host: "https://supervisor:8123"
   token: mytoken
   number_of_snapshots_to_keep: 3
 
 clean_up_snapshots_service:
-  host: http://hassio:8123
+  host: http://supervisor:8123
   token: mytoken
   number_of_snapshots_to_keep: 3
 
 clean_up_snapshots_service:
-  host: http://hassio:8123/
+  host: http://supervisor:8123/
   token: mytoken
   number_of_snapshots_to_keep: 3
 
