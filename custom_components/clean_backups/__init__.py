@@ -67,7 +67,7 @@ async def async_setup(hass, config):
                 # call hassio API deletion
                 try:
                     with async_timeout.timeout(10):
-                        resp = await session.post(hassio_url + f"{BACKUPS_URL_PATH}/" + snapshot['slug'] + "/remove", headers=headers, ssl=shouldVerifySsl(hassio_url))
+                        resp = await session.delete(hassio_url + f"{BACKUPS_URL_PATH}/" + snapshot['slug'], headers=headers, ssl=shouldVerifySsl(hassio_url))
                     res = await resp.json()
                     if res['result'].lower() == "ok":
                         _LOGGER.info("Deleted snapshot %s", snapshot["slug"])
