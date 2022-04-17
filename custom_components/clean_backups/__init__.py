@@ -20,6 +20,7 @@ DOMAIN = 'clean_up_snapshots_service'
 ATTR_NAME = 'number_of_snapshots_to_keep'
 USE_SSL_IP = 'use_ssl_with_ip_addres'
 DEFAULT_NUM = 0
+BACKUPS_URL_PATH='backups'
 
 CONFIG_SCHEMA = vol.Schema({
     DOMAIN: vol.Schema({
@@ -45,10 +46,10 @@ async def async_setup(hass, config):
         async with aiohttp.ClientSession(raise_for_status=True) as session:
             try:
                 with async_timeout.timeout(10):
-                    resp = await session.get(hassio_url + 'snapshots', headers=headers, ssl=shouldVerifySsl(hassio_url))
+                    resp = await session.get(hassio_url + BACKUPS_URL_PATH, headers=headers, ssl=shouldVerifySsl(hassio_url))
                 data = await resp.json()
                 await session.close()
-                return data['data']['snapshots']
+                return data['data']['backups']
             except aiohttp.ClientError:
                 _LOGGER.error("Client error on calling get snapshots", exc_info=True)
                 await session.close()
@@ -66,7 +67,7 @@ async def async_setup(hass, config):
                 # call hassio API deletion
                 try:
                     with async_timeout.timeout(10):
-                        resp = await session.post(hassio_url + 'snapshots/' + snapshot['slug'] + "/remove", headers=headers, ssl=shouldVerifySsl(hassio_url))
+                        resp = await session.post(hassio_url + f"{BACKUPS_URL_PATH}/" + snapshot['slug'] + "/remove", headers=headers, ssl=shouldVerifySsl(hassio_url))
                     res = await resp.json()
                     if res['result'].lower() == "ok":
                         _LOGGER.info("Deleted snapshot %s", snapshot["slug"])
