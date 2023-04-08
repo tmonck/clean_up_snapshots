@@ -17,28 +17,18 @@ To manage the installation and upgrades easier it's recommendated to use [HACS][
 ## HACS installation:
 
 1. Navigate to HACS Store
-2. Under the Integrations tab, click the add button (the one with a plus sign)
-3. Search for "Clean up snapshots service"
-4. Click on the service, and then on _Install this repository in HACS_
-5. Restart Home Assistant (Configuration > Server Controls > Restart)
-6. Generate a Long Lived Token
-    1. Navigate to your [profile page](https://www.home-assistant.io/docs/authentication/#your-account-profile).
-    1. At the bottom of the page you will see a section called Long-Lived Access Tokens.
-    1. Click _Create token_.
-    1. In the pop up give your token a name.
-    1. Copy the token from the following pop up **This will not be saved anywhere so put it somewhere you can find it again**
-7. Copy resulting token input this in configuration.yaml:
+2. Search for "Clean up snapshots service"
+3. Click on the service, and then on _DOWNLOAD_
+4. Restart Home Assistant (Settings > System > Restart)
+5. Add the following to your configuration.yaml:
 ```yaml
 clean_up_snapshots_service:
-  host: !secret base_url
-  token: !secret clean_up_token
-  number_of_snapshots_to_keep: 3
+  number_of_snapshots_to_keep: 3 # optional, default value is 0
 ```
+6. Restart Home Assistant (Settings > System > Restart)
+7. Look for the new `clean_up_snapshots_service.clean_up` service (Developer Tools > Services).
 
-8. Restart Home Assistant (Configuration > Server Controls > Restart)
-9. Look for the new `clean_up_snapshots_service.clean_up` service (Developer Tools > Services).
-
-## Consumption in automations
+## Use in automations
 You can trigger this service in an automation similarly to the one below.
 ```yaml
 alias: Daily snapshot clean up
@@ -56,46 +46,9 @@ action:
 ```
 
 ## Configuration:
-When configuring this plugin you will need to define a few parameters.
+When configuring this plugin you will need to define a the following parameter:
 
-1. `host (Required)` - This is the url to access your home assisant instance. The url can have a trailing `/` if you desire. It can also be `https` or `http`
-   1. https://supervisor:8123
-   1. https://supervisor:8123/
-2. `token (Required)` - The Long-Lived Access token you generated during installation.
-3. `number_of_snapshots_to_keep (Optional - default value is 3)` - The number of snapshots you wish to retain.
-4. `use_ssl_with_ip_address (Optional - default value is False)` - If you wish to verify the SSL Certificate for your home assistant instance and you are using an IP Address for your url then you need to set this to `True`.
-
-### Example configurations
-
-``` yaml
-clean_up_snapshots_service:
-  host: !secret base_url
-  token: !secret clean_up_token
-  number_of_snapshots_to_keep: 3
-
-clean_up_snapshots_service:
-  host: "https://supervisor:8123"
-  token: mytoken
-  number_of_snapshots_to_keep: 3
-
-clean_up_snapshots_service:
-  host: http://supervisor:8123
-  token: mytoken
-  number_of_snapshots_to_keep: 3
-
-clean_up_snapshots_service:
-  host: http://supervisor:8123/
-  token: mytoken
-  number_of_snapshots_to_keep: 3
-
-clean_up_snapshots_service:
-  host: https://1.1.1.1:8123
-  token: mytoken
-  number_of_snapshots_to_keep: 3
-  use_ssl_with_ip_address: True
-```
-*Note* When using hassio as your domain you may need to have your url be hassio.lan:8123
-[See issue #12](https://github.com/tmonck/clean_up_snapshots/issues/12)
+`number_of_snapshots_to_keep:` - (Optional) The number of snapshots you wish to retain, default is 0 (retain all)
 
 
 [0]: https://www.home-assistant.io/integrations/http/
