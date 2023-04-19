@@ -42,7 +42,7 @@ action:
     # Data is optional if you have defined the number of snapshots to keep in the configuration.yaml.
     # data:
       # If this property is passed to the service it will be used regardless of what you have in the configuration.yaml
-      # number_of_backups_to_keep: 7
+      # number_of_snapshots_to_keep: 7
 ```
 
 ## Configuration:
