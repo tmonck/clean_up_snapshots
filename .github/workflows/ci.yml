@@ -20,3 +20,12 @@ jobs:
       run:  pip install pre-commit
     - name: Lint
       run: pre-commit run --all-files
+  verify_hacs:
+    needs: [pre-commit]
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "actions/checkout@v3"
+        - name: HACS validation
+          uses: "hacs/action@main"
+          with:
+            category: "integration"
