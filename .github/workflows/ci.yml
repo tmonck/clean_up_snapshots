@@ -24,9 +24,9 @@ jobs:
     needs: [pre-commit]
     runs-on: "ubuntu-latest"
     steps:
-      - uses: "actions/checkout@v3"
+      - uses: actions/checkout@v3
       - name: HACS validation
-        uses: "hacs/action@main"
+        uses: hacs/action@main
         with:
           category: "integration"
           ignore: "brands"
