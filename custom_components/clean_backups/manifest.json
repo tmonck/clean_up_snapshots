@@ -2,8 +2,9 @@
     "domain": "clean_up_snapshots_service",
     "name": "Clean up your snapshots",
     "documentation": "https://github.com/tmonck/clean_up_snapshots",
+    "issue_tracker": "https://github.com/tmonck/clean_up_snapshots/issues",
     "dependencies": [],
-    "codeowners": [],
+    "codeowners": ["@tmonck"],
     "requirements": [],
-    "version": "0.8.1"
+    "version": "0.10.0"
 }
