@@ -1,10 +1,10 @@
 """Adds config flow for clean_up_snapshots"""
 import logging
 
-from homeassistant import config_entries
 import voluptuous as vol
+from homeassistant import config_entries
 
-from .const import CONF_ATTR_NAME, DOMAIN, DEFAULT_NUM
+from .const import CONF_ATTR_NAME, DEFAULT_NUM, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -31,7 +31,7 @@ class CleanUpSnapshotsFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_import(self, user_input=None):
         _LOGGER.info("Importing config entry form configuration.yaml")
-        user_input.get(CONF_ATTR_NAME)
+        return await self.async_step_user(user_input)
 
     async def _show_config_form(self, user_input):
         _LOGGER.debug("doing a thang")

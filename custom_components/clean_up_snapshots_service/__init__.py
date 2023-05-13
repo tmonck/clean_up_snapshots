@@ -1,23 +1,24 @@
 """
 Support for automating the deletion of snapshots.
 """
+import asyncio
 import logging
 import os
-
-import pytz
-from dateutil.parser import parse
-import asyncio
-import aiohttp
-import async_timeout
 from urllib.parse import urlparse
 
-from .const import BACKUPS_URL_PATH, CONF_ATTR_NAME, DEFAULT_NUM, DOMAIN, SUPERVISOR_URL
+import aiohttp
+import async_timeout
+import homeassistant.helpers.config_validation as cv
+import pytz
+import voluptuous as vol
+from dateutil.parser import parse
 from homeassistant.const import CONF_HOST, CONF_TOKEN
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.typing import ConfigType
-import homeassistant.helpers.config_validation as cv
-import voluptuous as vol
+
+from .const import (BACKUPS_URL_PATH, CONF_ATTR_NAME, DEFAULT_NUM, DOMAIN,
+                    SUPERVISOR_URL)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -70,7 +71,7 @@ class CleanUpSnapshots:
         self._hass = hass
         self._options = options
         self._headers = {
-            "authorization": "Bearer {}".format(os.getenv("SUPERVISOR_TOKEN"))
+            "authorization": "Bearer %s"% os.getenv("SUPERVISOR_TOKEN")
         }
         self._client_session = client_session
 
@@ -165,7 +166,7 @@ class CleanUpSnapshots:
                     snapshot["date"] = d.replace(tzinfo=pytz.utc).isoformat()
             snapshots.sort(key=lambda item: parse(item["date"]), reverse=True)
             stale_snapshots = snapshots[num_to_keep:]
-            _LOGGER.debug("Stale Snapshots: {}".format(stale_snapshots))
+            _LOGGER.debug("Stale Snapshots: %s" % stale_snapshots)
             await async_remove_snapshots(stale_snapshots)
         else:
             _LOGGER.info("No snapshots found.")
