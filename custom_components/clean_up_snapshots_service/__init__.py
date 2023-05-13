@@ -11,101 +11,137 @@ import aiohttp
 import async_timeout
 from urllib.parse import urlparse
 
+from .const import BACKUPS_URL_PATH, CONF_ATTR_NAME, DEFAULT_NUM, DOMAIN, SUPERVISOR_URL
 from homeassistant.const import CONF_HOST, CONF_TOKEN
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers.typing import ConfigType
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
 
 _LOGGER = logging.getLogger(__name__)
 
-DOMAIN = "clean_up_snapshots_service"
-ATTR_NAME = "number_of_snapshots_to_keep"
-DEFAULT_NUM = 0
-BACKUPS_URL_PATH = "backups"
-
 CONFIG_SCHEMA = vol.Schema(
-    {
-        DOMAIN: vol.Schema(
-            {
-                vol.Optional(ATTR_NAME, default=DEFAULT_NUM): int,
-            }
-        ),
-    },
+    vol.All(
+        cv.deprecated(DOMAIN),
+        {
+            DOMAIN: vol.Schema(
+                {
+                    vol.Optional(CONF_ATTR_NAME, default=DEFAULT_NUM): int,
+                }
+            ),
+        },
+    ),
     extra=vol.ALLOW_EXTRA,
 )
 
 
-async def async_setup(hass, config):
-    conf = config[DOMAIN]
-    supervisor_url = "http://supervisor/"
-    auth_token = os.getenv("SUPERVISOR_TOKEN")
-    num_snapshots_to_keep = conf.get(ATTR_NAME, DEFAULT_NUM)
-    headers = {"authorization": "Bearer {}".format(auth_token)}
+async def async_setup(hass: HomeAssistant, config: ConfigType):
+    hass.data.setdefault(DOMAIN, {})
+    if DOMAIN in config:
+        hass.async_create_task(
+            hass.config_entries.flow.async_init(
+                DOMAIN,
+                context={"source": SOURCE_IMPORT},
+                data=config[DOMAIN],
+            )
+        )
+    return True
+
+
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
+    # check for supervisor
+    if not is_hassio(hass):
+        _LOGGER.error("You must be running Supervisor for this integraion to work.")
+        return False
+
+    options = {num_snapshots_to_keep: entry.options.get(CONF_ATTR_NAME, DEFAULT_NUM)}
+    cleanup_snapshots = CleanUpSnapshots(hass, options)
+
+    hass.services.async_register(
+        DOMAIN, "clean_up", cleanup_snapshots.async_handle_clean_up
+    )
+
+    return True
+
+
+class CleanUpSnapshots:
+    def __init__(self, hass, options, client_session):
+        self._hass = hass
+        self._options = options
+        self._headers = {
+            "authorization": "Bearer {}".format(os.getenv("SUPERVISOR_TOKEN"))
+        }
+        self._client_session = client_session
 
     async def async_get_snapshots():
         _LOGGER.info("Calling get snapshots")
-        async with aiohttp.ClientSession(raise_for_status=True) as session:
-            try:
-                with async_timeout.timeout(10):
-                    resp = await session.get(
-                        supervisor_url + BACKUPS_URL_PATH, headers=headers
-                    )
-                data = await resp.json()
-                await session.close()
-                return data["data"]["backups"]
-            except aiohttp.ClientError:
-                _LOGGER.error("Client error on calling get snapshots", exc_info=True)
-                await session.close()
-            except asyncio.TimeoutError:
-                _LOGGER.error("Client timeout error on get snapshots", exc_info=True)
-                await session.close()
-            except Exception:
-                _LOGGER.error("Unknown exception thrown", exc_info=True)
-                await session.close()
+        try:
+            with async_timeout.timeout(10):
+                resp = await self._session.get(
+                    SUPERVISOR_URL + BACKUPS_URL_PATH, headers=self._headers
+                )
+            data = await resp.json()
+            return data["data"]["backups"]
+        except aiohttp.ClientError as err:
+            _LOGGER.error("Client error on calling get snapshots", exc_info=True)
+            raise HassioAPIError("Client error on calling GET /backups %s" % err)
+        except asyncio.TimeoutError:
+            _LOGGER.error("Client timeout error on get snapshots", exc_info=True)
+            raise HassioAPIError("Client timeout on GET /backups")
+        except Exception as err:
+            _LOGGER.error("Unknown exception thrown", exc_info=True)
+            raise HassioAPIError(
+                "Unknown exception thrown when calling GET /backups %s" % err
+            )
 
     async def async_remove_snapshots(stale_snapshots):
         for snapshot in stale_snapshots:
-            async with aiohttp.ClientSession(raise_for_status=True) as session:
-                _LOGGER.info("Attempting to remove snapshot: slug=%s", snapshot["slug"])
-                # call hassio API deletion
-                try:
-                    with async_timeout.timeout(10):
-                        resp = await session.delete(
-                            supervisor_url + f"{BACKUPS_URL_PATH}/" + snapshot["slug"],
-                            headers=headers,
-                        )
-                    res = await resp.json()
-                    if res["result"].lower() == "ok":
-                        _LOGGER.info("Deleted snapshot %s", snapshot["slug"])
-                        await session.close()
-                        continue
-                    else:
-                        # log an error
-                        _LOGGER.warning(
-                            "Failed to delete snapshot %s: %s",
-                            snapshot["slug"],
-                            str(res.status_code),
-                        )
+            _LOGGER.info("Attempting to remove snapshot: slug=%s", snapshot["slug"])
 
-                except aiohttp.ClientError:
-                    _LOGGER.error(
-                        "Client error on calling delete snapshot", exc_info=True
+            # call hassio API deletion
+            try:
+                with async_timeout.timeout(10):
+                    resp = await self._session.delete(
+                        SUPERVISOR_URL + f"{BACKUPS_URL_PATH}/" + snapshot["slug"],
+                        headers=self._headers,
                     )
-                    await session.close()
-                except asyncio.TimeoutError:
-                    _LOGGER.error(
-                        "Client timeout error on delete snapshot", exc_info=True
+                res = await resp.json()
+                if res["result"].lower() == "ok":
+                    _LOGGER.info("Deleted snapshot %s", snapshot["slug"])
+                    continue
+                else:
+                    _LOGGER.warning(
+                        "Failed to delete snapshot %s: %s",
+                        snapshot["slug"],
+                        str(res.status_code),
                     )
-                    await session.close()
-                except Exception:
-                    _LOGGER.error(
-                        "Unknown exception thrown on calling delete snapshot",
-                        exc_info=True,
-                    )
-                    await session.close()
+
+            except aiohttp.ClientError as err:
+                _LOGGER.error("Client error on calling delete snapshot", exc_info=True)
+                raise HassioAPIError(
+                    "Client error on calling DELETE /backups/%s %s" % snapshot["slug"],
+                    err,
+                )
+            except asyncio.TimeoutError:
+                _LOGGER.error("Client timeout error on delete snapshot", exc_info=True)
+                raise HassioAPIError(
+                    "Client timeout on DELETE /backups/%s" % snapshot["slug"]
+                )
+            except Exception as err:
+                _LOGGER.error(
+                    "Unknown exception thrown on calling delete snapshot",
+                    exc_info=True,
+                )
+                raise HassioAPIError(
+                    "Unknown exception thrown when calling DELETE /backups/%s %s"
+                    % snapshot["slug"],
+                    err,
+                )
 
     async def async_handle_clean_up(call):
         # Allow the service call override the configuration.
-        num_to_keep = call.data.get(ATTR_NAME, num_snapshots_to_keep)
+        num_to_keep = call.data.get(CONF_ATTR_NAME, num_snapshots_to_keep)
         _LOGGER.info("Number of snapshots we are going to keep: %s", str(num_to_keep))
 
         if num_to_keep == 0:
@@ -115,7 +151,7 @@ async def async_setup(hass, config):
             return
 
         snapshots = await async_get_snapshots()
-        _LOGGER.info("Snapshots: %s", snapshots)
+        _LOGGER.debug("Snapshots: %s", snapshots)
 
         # filter the snapshots
         if snapshots is not None:
@@ -129,11 +165,7 @@ async def async_setup(hass, config):
                     snapshot["date"] = d.replace(tzinfo=pytz.utc).isoformat()
             snapshots.sort(key=lambda item: parse(item["date"]), reverse=True)
             stale_snapshots = snapshots[num_to_keep:]
-            _LOGGER.info("Stale Snapshots: {}".format(stale_snapshots))
+            _LOGGER.debug("Stale Snapshots: {}".format(stale_snapshots))
             await async_remove_snapshots(stale_snapshots)
         else:
             _LOGGER.info("No snapshots found.")
-
-    hass.services.async_register(DOMAIN, "clean_up", async_handle_clean_up)
-
-    return True
