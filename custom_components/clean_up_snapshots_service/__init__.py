@@ -12,13 +12,11 @@ import homeassistant.helpers.config_validation as cv
 import pytz
 import voluptuous as vol
 from dateutil.parser import parse
-from homeassistant.const import CONF_HOST, CONF_TOKEN
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.typing import ConfigType
 
-from .const import (BACKUPS_URL_PATH, CONF_ATTR_NAME, DEFAULT_NUM, DOMAIN,
-                    SUPERVISOR_URL)
+from .const import BACKUPS_URL_PATH, CONF_ATTR_NAME, DEFAULT_NUM, DOMAIN, SUPERVISOR_URL
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -57,7 +55,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         return False
 
     options = {num_snapshots_to_keep: entry.options.get(CONF_ATTR_NAME, DEFAULT_NUM)}
-    cleanup_snapshots = CleanUpSnapshots(hass, options)
+    session = async_get_clientsession(hass)
+    cleanup_snapshots = CleanUpSnapshots(hass, options, session)
 
     hass.services.async_register(
         DOMAIN, "clean_up", cleanup_snapshots.async_handle_clean_up
@@ -70,9 +69,7 @@ class CleanUpSnapshots:
     def __init__(self, hass, options, client_session):
         self._hass = hass
         self._options = options
-        self._headers = {
-            "authorization": "Bearer %s"% os.getenv("SUPERVISOR_TOKEN")
-        }
+        self._headers = {"authorization": "Bearer %s" % os.getenv("SUPERVISOR_TOKEN")}
         self._client_session = client_session
 
     async def async_get_snapshots():
