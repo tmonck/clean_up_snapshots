@@ -1,9 +1,22 @@
+
+
 # Clean up snapshots
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
+[![Code style](https://img.shields.io/badge/code%20style-black-000000.svg?style=for-the-badge)](https://github.com/psf/black)
 [![CI](https://github.com/tmonck/clean_up_snapshots/actions/workflows/ci.yml/badge.svg)](https://github.com/tmonck/clean_up_snapshots/actions/workflows/ci.yml)
 
-This Home Assistant extension exposes a service to automate the clean up of old snapshots.
+This Home Assistant extension exposes a service to automate the clean up of old backups.
+
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
+**Table of Contents**
+
+- [Prerequisites](#prerequisites)
+- [HACS installation:](#hacs-installation)
+- [Use in automations](#use-in-automations)
+- [Configuration:](#configuration)
+
+<!-- markdown-toc end -->
 
 ## Prerequisites
 
@@ -14,20 +27,28 @@ To be able to use this extension you must must have the following integrations e
 
 To manage the installation and upgrades easier it's recommendated to use [HACS][2].
 
-## HACS installation:
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=tmonck&repository=clean_up_snapshots&category=integration)
 
+## HACS installation:
 1. Navigate to HACS Store
 2. Search for "Clean up snapshots service"
 3. Click on the service, and then on _DOWNLOAD_
 4. Restart Home Assistant (Settings > System > Restart)
-5. Add the following to your configuration.yaml:
-```yaml
-clean_up_snapshots_service:
-  number_of_snapshots_to_keep: 3 # optional, default value is 0
-```
+5. Add the integration via one of the options below:
+  1. Add it via the Settings > Devices & Services > ...
+  2. **:warning: Warning this is deprecated** Add the following to your configuration.yaml:
+    ```yaml
+    clean_up_snapshots_service:
+      number_of_snapshots_to_keep: 3 # optional, default value is 0
+    ```
 6. Restart Home Assistant (Settings > System > Restart)
 7. Look for the new `clean_up_snapshots_service.clean_up` service (Developer Tools > Services).
 
+
+
+5. 
+> **Warning**
+> The setup via the configuration.yaml file is being deprecated and will be removed in a future release.
 ## Use in automations
 You can trigger this service in an automation similarly to the one below.
 ```yaml
