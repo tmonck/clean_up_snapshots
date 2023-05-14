@@ -1,5 +1,3 @@
-
-
 # Clean up snapshots
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg?style=for-the-badge)](https://github.com/custom-components/hacs)
@@ -27,7 +25,8 @@ To manage the installation and upgrades easier it's recommendated to use [HACS][
 
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=tmonck&repository=clean_up_snapshots&category=integration)
 
-## HACS installation:
+## HACS installation
+
 1. Navigate to HACS Store
 2. Search for "Clean up snapshots service"
 3. Click on the service, and then on _DOWNLOAD_
@@ -37,15 +36,19 @@ To manage the installation and upgrades easier it's recommendated to use [HACS][
     2. Add the following to your configuration.yaml:
         > **Warning**
         > The setup via the configuration.yaml file is being deprecated and will be removed in a future release.
+
           ```yaml
           clean_up_snapshots_service:
             number_of_snapshots_to_keep: 3 # optional, default value is 0
           ```
+
 6. Restart Home Assistant (Settings > System > Restart)
 7. Look for the new `clean_up_snapshots_service.clean_up` service (Developer Tools > Services).
 
 ## Use in automations
+
 You can trigger this service in an automation similarly to the one below.
+
 ```yaml
 alias: Daily snapshot clean up
 initial_state: 'on'
@@ -61,11 +64,11 @@ action:
       # number_of_snapshots_to_keep: 7
 ```
 
-## Configuration:
+## Configuration
+
 When configuring this plugin you will need to define a the following parameter:
 
 `number_of_snapshots_to_keep:` - (Optional) The number of snapshots you wish to retain, default is 0 (retain all)
-
 
 [0]: https://www.home-assistant.io/integrations/hassio
 [1]: https://hacs.xyz/
