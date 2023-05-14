@@ -9,7 +9,6 @@
 This Home Assistant extension exposes a service to automate the clean up of old backups.
 
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
-**Table of Contents**
 
 - [Prerequisites](#prerequisites)
 - [HACS installation:](#hacs-installation)
@@ -22,10 +21,9 @@ This Home Assistant extension exposes a service to automate the clean up of old 
 
 To be able to use this extension you must must have the following integrations enabled and configured within your Home Assistant installation.
 
-- [HTTP][0]
-- [API][1]
+- [Supervisor][0]
 
-To manage the installation and upgrades easier it's recommendated to use [HACS][2].
+To manage the installation and upgrades easier it's recommendated to use [HACS][1].
 
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=tmonck&repository=clean_up_snapshots&category=integration)
 
@@ -46,9 +44,6 @@ To manage the installation and upgrades easier it's recommendated to use [HACS][
 6. Restart Home Assistant (Settings > System > Restart)
 7. Look for the new `clean_up_snapshots_service.clean_up` service (Developer Tools > Services).
 
-
-
-5. 
 ## Use in automations
 You can trigger this service in an automation similarly to the one below.
 ```yaml
@@ -72,6 +67,5 @@ When configuring this plugin you will need to define a the following parameter:
 `number_of_snapshots_to_keep:` - (Optional) The number of snapshots you wish to retain, default is 0 (retain all)
 
 
-[0]: https://www.home-assistant.io/integrations/http/
-[1]: https://www.home-assistant.io/integrations/api/
-[2]: https://hacs.xyz/
+[0]: https://www.home-assistant.io/integrations/hassio
+[1]: https://hacs.xyz/
