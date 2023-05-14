@@ -35,8 +35,8 @@ To manage the installation and upgrades easier it's recommendated to use [HACS][
 3. Click on the service, and then on _DOWNLOAD_
 4. Restart Home Assistant (Settings > System > Restart)
 5. Add the integration via one of the options below:
-    a. Add it via the Settings > Devices & Services > ...
-    b. **:warning: Warning this is deprecated** Add the following to your configuration.yaml:
+    1. Add it via the Settings > Devices & Services > ...
+    2. **:warning: Warning this is deprecated** Add the following to your configuration.yaml:
       ```yaml
       clean_up_snapshots_service:
         number_of_snapshots_to_keep: 3 # optional, default value is 0
