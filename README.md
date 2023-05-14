@@ -36,7 +36,9 @@ To manage the installation and upgrades easier it's recommendated to use [HACS][
 4. Restart Home Assistant (Settings > System > Restart)
 5. Add the integration via one of the options below:
     1. Add it via the Settings > Devices & Services > ...
-    2. **:warning: Warning this is deprecated** Add the following to your configuration.yaml:
+    2. Add the following to your configuration.yaml:
+    > **Warning**
+    > The setup via the configuration.yaml file is being deprecated and will be removed in a future release.
       ```yaml
       clean_up_snapshots_service:
         number_of_snapshots_to_keep: 3 # optional, default value is 0
@@ -47,8 +49,6 @@ To manage the installation and upgrades easier it's recommendated to use [HACS][
 
 
 5. 
-> **Warning**
-> The setup via the configuration.yaml file is being deprecated and will be removed in a future release.
 ## Use in automations
 You can trigger this service in an automation similarly to the one below.
 ```yaml
