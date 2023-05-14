@@ -16,6 +16,15 @@ repos:
     hooks:
       - id: isort
         name: isort (python)
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.4
+    hooks:
+      - id: bandit
+        args:
+          - --quiet
+          - --format=custom
+          - --configfile=tests/bandit.yaml
+        files: ^(homeassistant|script|tests)/.+\.py$
   - repo: https://github.com/igorshubovych/markdownlint-cli
     rev: v0.34.0
     hooks:
