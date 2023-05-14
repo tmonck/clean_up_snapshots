@@ -2,9 +2,9 @@
 
 # Clean up snapshots
 
-[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg?style=for-the-badge)](https://github.com/custom-components/hacs)
 [![Code style](https://img.shields.io/badge/code%20style-black-000000.svg?style=for-the-badge)](https://github.com/psf/black)
-[![CI](https://github.com/tmonck/clean_up_snapshots/actions/workflows/ci.yml/badge.svg)](https://github.com/tmonck/clean_up_snapshots/actions/workflows/ci.yml)
+[![CI](https://github.com/tmonck/clean_up_snapshots/actions/workflows/ci.yml/badge.svg?style=for-the-badge)](https://github.com/tmonck/clean_up_snapshots/actions/workflows/ci.yml)
 
 This Home Assistant extension exposes a service to automate the clean up of old backups.
 
