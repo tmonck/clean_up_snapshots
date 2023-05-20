@@ -4,7 +4,6 @@ Support for automating the deletion of snapshots.
 import asyncio
 import logging
 import os
-from urllib.parse import urlparse
 
 import aiohttp
 import async_timeout
@@ -12,8 +11,10 @@ import homeassistant.helpers.config_validation as cv
 import pytz
 import voluptuous as vol
 from dateutil.parser import parse
+from homeassistant.components.hassio import HassioAPIError, is_hassio
+from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers import aiohttp_client
 from homeassistant.helpers.typing import ConfigType
 
 from .const import BACKUPS_URL_PATH, CONF_ATTR_NAME, DEFAULT_NUM, DOMAIN, SUPERVISOR_URL
@@ -54,9 +55,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         _LOGGER.error("You must be running Supervisor for this integraion to work.")
         return False
 
-    options = {num_snapshots_to_keep: entry.options.get(CONF_ATTR_NAME, DEFAULT_NUM)}
-    session = async_get_clientsession(hass)
-    cleanup_snapshots = CleanUpSnapshots(hass, options, session)
+    options = {"num_snapshots_to_keep": entry.options.get(CONF_ATTR_NAME, DEFAULT_NUM)}
+
+    cleanup_snapshots = CleanUpSnapshots(hass, options)
 
     hass.services.async_register(
         DOMAIN, "clean_up", cleanup_snapshots.async_handle_clean_up
@@ -66,17 +67,17 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
 
 class CleanUpSnapshots:
-    def __init__(self, hass, options, client_session):
+    def __init__(self, hass, options):
         self._hass = hass
         self._options = options
         self._headers = {"authorization": "Bearer %s" % os.getenv("SUPERVISOR_TOKEN")}
-        self._client_session = client_session
+        self._client_session = aiohttp_client.async_get_clientsession(hass)
 
-    async def async_get_snapshots():
+    async def async_get_snapshots(self):
         _LOGGER.info("Calling get snapshots")
         try:
             with async_timeout.timeout(10):
-                resp = await self._session.get(
+                resp = await self._client_session.get(
                     SUPERVISOR_URL + BACKUPS_URL_PATH, headers=self._headers
                 )
             data = await resp.json()
@@ -93,14 +94,14 @@ class CleanUpSnapshots:
                 "Unknown exception thrown when calling GET /backups %s" % err
             )
 
-    async def async_remove_snapshots(stale_snapshots):
+    async def async_remove_snapshots(self, stale_snapshots):
         for snapshot in stale_snapshots:
             _LOGGER.info("Attempting to remove snapshot: slug=%s", snapshot["slug"])
 
             # call hassio API deletion
             try:
                 with async_timeout.timeout(10):
-                    resp = await self._session.delete(
+                    resp = await self._client_session.delete(
                         SUPERVISOR_URL + f"{BACKUPS_URL_PATH}/" + snapshot["slug"],
                         headers=self._headers,
                     )
@@ -118,8 +119,8 @@ class CleanUpSnapshots:
             except aiohttp.ClientError as err:
                 _LOGGER.error("Client error on calling delete snapshot", exc_info=True)
                 raise HassioAPIError(
-                    "Client error on calling DELETE /backups/%s %s" % snapshot["slug"],
-                    err,
+                    "Client error on calling DELETE /backups/%s %s"
+                    % (snapshot["slug"], err)
                 )
             except asyncio.TimeoutError:
                 _LOGGER.error("Client timeout error on delete snapshot", exc_info=True)
@@ -133,13 +134,12 @@ class CleanUpSnapshots:
                 )
                 raise HassioAPIError(
                     "Unknown exception thrown when calling DELETE /backups/%s %s"
-                    % snapshot["slug"],
-                    err,
+                    % (snapshot["slug"], err)
                 )
 
-    async def async_handle_clean_up(call):
+    async def async_handle_clean_up(self, call):
         # Allow the service call override the configuration.
-        num_to_keep = call.data.get(CONF_ATTR_NAME, num_snapshots_to_keep)
+        num_to_keep = call.data.get(CONF_ATTR_NAME, DEFAULT_NUM)
         _LOGGER.info("Number of snapshots we are going to keep: %s", str(num_to_keep))
 
         if num_to_keep == 0:
@@ -148,7 +148,7 @@ class CleanUpSnapshots:
             )
             return
 
-        snapshots = await async_get_snapshots()
+        snapshots = await self.async_get_snapshots()
         _LOGGER.debug("Snapshots: %s", snapshots)
 
         # filter the snapshots
@@ -164,6 +164,6 @@ class CleanUpSnapshots:
             snapshots.sort(key=lambda item: parse(item["date"]), reverse=True)
             stale_snapshots = snapshots[num_to_keep:]
             _LOGGER.debug("Stale Snapshots: %s" % stale_snapshots)
-            await async_remove_snapshots(stale_snapshots)
+            await self.async_remove_snapshots(stale_snapshots)
         else:
             _LOGGER.info("No snapshots found.")
