@@ -1,7 +1,7 @@
 """Tests of __init__.py"""
 import asyncio
 import json
-import logging
+from http import HTTPStatus
 
 import aiohttp
 import pytest
@@ -118,3 +118,80 @@ async def test_async_remove_snapshots_makes_api_call_for_stale_snapshots(
     for mock_call in aioclient_mock.mock_calls:
         (method, _, _, _) = mock_call
         assert method == "DELETE"
+
+
+@pytest.mark.asyncio
+async def test_async_remove_snapshots_logs_warning_when_delete_fails(
+    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker, caplog
+):
+    headers = {"authorization": "Bearer %s" % None}
+    backups = [json.loads(load_fixture("backups.json"))["data"]["backups"][0]]
+    url = f"http://supervisor/backups/%s" % backups[0]["slug"]
+    aioclient_mock.delete(
+        url, json={"result": "failed"}, status=HTTPStatus.BAD_REQUEST, headers=headers
+    )
+    thing = CleanUpSnapshots(hass, None)
+    await thing.async_remove_snapshots(backups)
+    # Assert we only call for the backups that are passed
+    assert aioclient_mock.call_count == len(backups)
+    # All the calls should be a delete verb.
+    for mock_call in aioclient_mock.mock_calls:
+        (method, _, _, _) = mock_call
+        assert method == "DELETE"
+
+    for record in caplog.records:
+        if record.levelname == "WARNING":
+            assert f"Failed to delete snapshot %s" % backups[0]["slug"] in caplog.text
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "error, error_message, log_message",
+    [
+        (
+            asyncio.TimeoutError,
+            "Client timeout on DELETE /backups",
+            "timeout error on delete snapshot",
+        ),
+        (
+            aiohttp.ClientError,
+            "Client error on calling DELETE /backups",
+            "Client error on calling delete snapshot",
+        ),
+        (
+            Exception,
+            "Unknown exception thrown when calling DELETE /backup",
+            "Unknown exception throw",
+        ),
+    ],
+)
+async def test_async_remove_snapshots_logs_error_and_raises(
+    hass: HomeAssistant,
+    aioclient_mock: AiohttpClientMocker,
+    caplog,
+    error,
+    error_message,
+    log_message,
+):
+    headers = {"authorization": "Bearer %s" % None}
+    backups = [json.loads(load_fixture("backups.json"))["data"]["backups"][0]]
+    url = f"http://supervisor/backups/%s" % backups[0]["slug"]
+    aioclient_mock.delete(
+        url,
+        json={"result": "failed"},
+        exc=error,
+        status=HTTPStatus.BAD_REQUEST,
+        headers=headers,
+    )
+    thing = CleanUpSnapshots(hass, None)
+    try:
+        _ = await thing.async_remove_snapshots(backups)
+    except HassioAPIError as err:
+        assert err is not None
+        assert error_message in str(err)
+    assert aioclient_mock.call_count == 1
+    (method, url, _, headers) = aioclient_mock.mock_calls[0]
+    assert method == "DELETE"
+    for record in caplog.records:
+        if record.levelname == "ERROR":
+            assert log_message in caplog.text

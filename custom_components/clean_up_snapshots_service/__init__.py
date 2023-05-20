@@ -113,7 +113,7 @@ class CleanUpSnapshots:
                     _LOGGER.warning(
                         "Failed to delete snapshot %s: %s",
                         snapshot["slug"],
-                        str(res.status_code),
+                        str(resp.status),
                     )
 
             except aiohttp.ClientError as err:
