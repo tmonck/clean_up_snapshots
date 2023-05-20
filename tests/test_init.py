@@ -2,18 +2,21 @@
 import asyncio
 import json
 from http import HTTPStatus
-from unittest.mock import AsyncMock, patch
+import os
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import aiohttp
 import pytest
 from dateutil.parser import parse
 from homeassistant.components.hassio import HassioAPIError
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, ServiceCall
+from homeassistant.setup import async_setup_component
 from pytest_homeassistant_custom_component.common import load_fixture
 from pytest_homeassistant_custom_component.test_util.aiohttp import AiohttpClientMocker
 from yarl import URL
 
-from custom_components.clean_up_snapshots_service import CleanUpSnapshots
+from custom_components.clean_up_snapshots_service import CleanUpSnapshots, async_setup_entry
 from custom_components.clean_up_snapshots_service.const import (
     BACKUPS_URL_PATH,
     CONF_ATTR_NAME,
@@ -22,12 +25,10 @@ from custom_components.clean_up_snapshots_service.const import (
 )
 from tests.common import setup_supervisor_integration
 
-pytest_plugins = ("pytest_asyncio",)
-
 
 @pytest.mark.asyncio
-async def test_async_setup_entry():
-    """Test the async setup entry call"""
+async def test_async_setup():
+    """Test the async setup call"""
     # # check for supervisor
     # if not is_hassio(hass):
     #     _LOGGER.error("You must be running Supervisor for this integraion to work.")
@@ -39,6 +40,14 @@ async def test_async_setup_entry():
     # hass.services.async_register(
     #     DOMAIN, "clean_up", cleanup_snapshots.async_handle_clean_up
     # )
+blah = AsyncMock()
+blah.return_value = True
+@pytest.mark.asyncio
+@patch("custom_components.clean_up_snapshots_service.is_hassio", blah)
+async def test_async_setup_entry(hass: HomeAssistant):
+    entry = ConfigEntry(1, DOMAIN, "",{}, None, options={CONF_ATTR_NAME: 3})
+    result = await async_setup_entry(hass, entry)
+    assert result is True
 
 
 @pytest.mark.asyncio
