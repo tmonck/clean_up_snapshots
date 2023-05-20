@@ -1,0 +1,20 @@
+{
+  "data": {
+    "backups": [
+      {
+        "slug": "skuwe823",
+        "date": "2020-09-30T20:25:34.273Z",
+        "name": "Awesome backup",
+        "type": "partial",
+        "size": 44,
+        "protected": true,
+        "compressed": true,
+        "content": {
+          "homeassistant": true,
+          "addons": ["awesome_addon"],
+          "folders": ["ssl", "media"]
+        }
+      }
+    ]
+  }
+}
