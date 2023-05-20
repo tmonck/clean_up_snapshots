@@ -2,11 +2,13 @@
 import asyncio
 import json
 from http import HTTPStatus
+from unittest.mock import AsyncMock, patch
 
 import aiohttp
 import pytest
+from dateutil.parser import parse
 from homeassistant.components.hassio import HassioAPIError
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, ServiceCall
 from pytest_homeassistant_custom_component.common import load_fixture
 from pytest_homeassistant_custom_component.test_util.aiohttp import AiohttpClientMocker
 from yarl import URL
@@ -14,6 +16,8 @@ from yarl import URL
 from custom_components.clean_up_snapshots_service import CleanUpSnapshots
 from custom_components.clean_up_snapshots_service.const import (
     BACKUPS_URL_PATH,
+    CONF_ATTR_NAME,
+    DOMAIN,
     SUPERVISOR_URL,
 )
 from tests.common import setup_supervisor_integration
@@ -195,3 +199,43 @@ async def test_async_remove_snapshots_logs_error_and_raises(
     for record in caplog.records:
         if record.levelname == "ERROR":
             assert log_message in caplog.text
+
+
+blah = AsyncMock()
+backups = json.loads(load_fixture("backups.json"))["data"]["backups"]
+blah.return_value = backups
+
+
+@pytest.mark.asyncio
+@patch.object(CleanUpSnapshots, "async_get_snapshots", blah)
+async def test_async_handle_clean_up_call(
+    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker
+):
+    backups = json.loads(load_fixture("backups.json"))["data"]["backups"]
+    backups.sort(key=lambda item: parse(item["date"]), reverse=True)
+    backup_slugs = []
+    for backup in backups[3:]:
+        backup_slugs.append(backup["slug"])
+    await setup_supervisor_integration(aioclient_mock, backup_slugs)
+    thing = CleanUpSnapshots(hass, None)
+    call = ServiceCall(DOMAIN, "clean_up", {"number_of_snapshots_to_keep": 3})
+    await thing.async_handle_clean_up(call)
+    assert aioclient_mock.call_count == len(backup_slugs)
+
+
+blah = AsyncMock()
+blah.return_value = None
+
+
+@pytest.mark.asyncio
+@patch.object(CleanUpSnapshots, "async_get_snapshots", blah)
+async def test_async_handle_clean_up_call_only_logs(
+    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker, caplog
+):
+    thing = CleanUpSnapshots(hass, None)
+    call = ServiceCall(DOMAIN, "clean_up", {"number_of_snapshots_to_keep": 3})
+    await thing.async_handle_clean_up(call)
+    assert aioclient_mock.call_count == 0
+    for record in caplog.records:
+        if record.levelname == "INFO":
+            assert "No snapshots found." in caplog.text
