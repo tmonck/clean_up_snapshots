@@ -18,6 +18,7 @@ from yarl import URL
 
 from custom_components.clean_up_snapshots_service import (
     CleanUpSnapshots,
+    async_setup,
     async_setup_entry,
 )
 from custom_components.clean_up_snapshots_service.const import (
@@ -30,27 +31,19 @@ from tests.common import setup_supervisor_integration
 
 
 @pytest.mark.asyncio
-async def test_async_setup():
+@pytest.mark.parametrize("config", [({}), ({DOMAIN: {}})])
+async def test_async_setup_always_returns_true(hass: HomeAssistant, config):
     """Test the async setup call"""
-    # # check for supervisor
-    # if not is_hassio(hass):
-    #     _LOGGER.error("You must be running Supervisor for this integraion to work.")
-    #     return False
-
-    # options = {num_snapshots_to_keep: entry.options.get(CONF_ATTR_NAME, DEFAULT_NUM)}
-    # cleanup_snapshots = CleanUpSnapshots(hass, options)
-
-    # hass.services.async_register(
-    #     DOMAIN, "clean_up", cleanup_snapshots.async_handle_clean_up
-    # )
+    result = await async_setup(hass, config)
+    assert result is True
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("return_value", [(True), (False)])
 async def test_async_setup_entry(hass: HomeAssistant, return_value):
-    blah = MagicMock()
-    blah.return_value = return_value
-    with patch("custom_components.clean_up_snapshots_service.is_hassio", blah):
+    is_hassio = MagicMock()
+    is_hassio.return_value = return_value
+    with patch("custom_components.clean_up_snapshots_service.is_hassio", is_hassio):
         entry = ConfigEntry(1, DOMAIN, "", {}, None, options={CONF_ATTR_NAME: 3})
         result = await async_setup_entry(hass, entry)
     assert result is return_value
@@ -216,13 +209,13 @@ async def test_async_remove_snapshots_logs_error_and_raises(
             assert log_message in caplog.text
 
 
-blah = AsyncMock()
+mock_get_snapshots = AsyncMock()
 backups = json.loads(load_fixture("backups.json"))["data"]["backups"]
-blah.return_value = backups
+mock_get_snapshots.return_value = backups
 
 
 @pytest.mark.asyncio
-@patch.object(CleanUpSnapshots, "async_get_snapshots", blah)
+@patch.object(CleanUpSnapshots, "async_get_snapshots", mock_get_snapshots)
 async def test_async_handle_clean_up_call(
     hass: HomeAssistant, aioclient_mock: AiohttpClientMocker
 ):
@@ -238,12 +231,30 @@ async def test_async_handle_clean_up_call(
     assert aioclient_mock.call_count == len(backup_slugs)
 
 
-blah = AsyncMock()
-blah.return_value = None
+mock_get_snapshots = AsyncMock()
+mock_get_snapshots.return_value = None
 
 
 @pytest.mark.asyncio
-@patch.object(CleanUpSnapshots, "async_get_snapshots", blah)
+@patch.object(CleanUpSnapshots, "async_get_snapshots", mock_get_snapshots)
+async def test_async_handle_clean_up_call_only_logs_once(
+    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker, caplog
+):
+    thing = CleanUpSnapshots(hass, None)
+    call = ServiceCall(DOMAIN, "clean_up", {"number_of_snapshots_to_keep": 0})
+    await thing.async_handle_clean_up(call)
+    assert aioclient_mock.call_count == 0
+    assert mock_get_snapshots.call_count == 0
+    for record in caplog.records:
+        if record.levelname == "INFO":
+            assert (
+                "Number of snapshots to keep was zero which is default so no snapshots will be removed"
+                in caplog.text
+            )
+
+
+@pytest.mark.asyncio
+@patch.object(CleanUpSnapshots, "async_get_snapshots", mock_get_snapshots)
 async def test_async_handle_clean_up_call_only_logs(
     hass: HomeAssistant, aioclient_mock: AiohttpClientMocker, caplog
 ):
@@ -254,3 +265,28 @@ async def test_async_handle_clean_up_call_only_logs(
     for record in caplog.records:
         if record.levelname == "INFO":
             assert "No snapshots found." in caplog.text
+
+
+mock_get_snapshots = AsyncMock()
+backups = json.loads(load_fixture("invalid_date_backups.json"))["data"]["backups"]
+mock_get_snapshots.return_value = backups
+
+
+@pytest.mark.asyncio
+async def test_async_handle_clean_up_call_adjusts_date_if_tz_missing(
+    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker
+):
+    mock_get_snapshots = AsyncMock()
+    backups = json.loads(load_fixture("invalid_date_backups.json"))["data"]["backups"]
+    mock_get_snapshots.return_value = backups
+    backups.sort(key=lambda item: parse(item["date"], ignoretz=True), reverse=True)
+    backup_slugs = []
+    for backup in backups:
+        backup_slugs.append(backup["slug"])
+    await setup_supervisor_integration(aioclient_mock, backup_slugs)
+    with patch.object(CleanUpSnapshots, "async_get_snapshots", mock_get_snapshots):
+        thing = CleanUpSnapshots(hass, None)
+        call = ServiceCall(DOMAIN, "clean_up", {"number_of_snapshots_to_keep": 1})
+        await thing.async_handle_clean_up(call)
+    assert aioclient_mock.call_count == 2
+    assert mock_get_snapshots.call_count == 1

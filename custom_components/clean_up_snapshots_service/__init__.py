@@ -11,6 +11,7 @@ import homeassistant.helpers.config_validation as cv
 import pytz
 import voluptuous as vol
 from dateutil.parser import parse
+from dateutil.tz import tzutc
 from homeassistant.components.hassio import HassioAPIError, is_hassio
 from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -154,8 +155,8 @@ class CleanUpSnapshots:
         # filter the snapshots
         if snapshots is not None:
             for snapshot in snapshots:
-                d = parse(snapshot["date"])
-                if d.tzinfo is None or d.tzinfo.utcoffset(d) is None:
+                d = parse(snapshot["date"], ignoretz=False)
+                if d.tzinfo is None or d.tzinfo is not tzutc():
                     _LOGGER.info(
                         "Naive DateTime found for snapshot %s, setting to UTC...",
                         snapshot["slug"],
