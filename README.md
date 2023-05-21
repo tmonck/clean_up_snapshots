@@ -23,9 +23,10 @@ To be able to use this extension you must must have the following integrations e
 
 To manage the installation and upgrades easier it's recommendated to use [HACS][1].
 
-[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=tmonck&repository=clean_up_snapshots&category=integration)
-
 ## HACS installation
+
+You can either use the easy button [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=tmonck&repository=clean_up_snapshots&category=integration)
+or you can install manually.
 
 1. Navigate to HACS Store
 2. Search for "Clean up snapshots service"

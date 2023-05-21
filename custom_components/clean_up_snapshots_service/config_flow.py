@@ -10,10 +10,11 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class CleanUpSnapshotsFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
+    """Handle config flow for CleanUpSnapshotsService"""
+
     VERSION = 1
 
     def __init__(self):
-        _LOGGER.debug("loading clean_up_snapshots confFlowHandler")
         self._errors = {}
 
     async def async_step_user(self, user_input=None):
@@ -23,7 +24,7 @@ class CleanUpSnapshotsFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             return self.async_create_entry(title=DOMAIN, data=user_input)
 
         if self._async_current_entries():
-            return self.async_abort(reason="single_instance")
+            return self.async_abort(reason="already_configured")
 
         user_input = {}
         user_input[CONF_ATTR_NAME] = DEFAULT_NUM
@@ -34,12 +35,13 @@ class CleanUpSnapshotsFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         return await self.async_step_user(user_input)
 
     async def _show_config_form(self, user_input):
-        _LOGGER.debug("doing a thang")
         return self.async_show_form(
             step_id="user",
             data_schema=vol.Schema(
                 {
-                    vol.Optional(CONF_ATTR_NAME, default=user_input[DEFAULT_NUM]): int,
+                    vol.Optional(
+                        CONF_ATTR_NAME, default=user_input[CONF_ATTR_NAME]
+                    ): int,
                 }
             ),
             errors=self._errors,
