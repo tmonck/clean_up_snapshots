@@ -9,7 +9,7 @@ from .const import CONF_ATTR_NAME, DEFAULT_NUM, DOMAIN
 _LOGGER = logging.getLogger(__name__)
 
 
-class CleanUpSnapshotsFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
+class CleanUpBackupsFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle config flow for CleanUpSnapshotsService"""
 
     VERSION = 1
