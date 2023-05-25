@@ -38,13 +38,14 @@ CONFIG_SCHEMA = vol.Schema(
 
 
 async def async_setup(hass: HomeAssistant, config: ConfigType):
-    hass.data.setdefault(DOMAIN, {})
     if DOMAIN in config:
+        conf = config.get(DOMAIN, {})
+        num_to_keep = conf.get(CONF_ATTR_NAME, DEFAULT_NUM)
         hass.async_create_task(
             hass.config_entries.flow.async_init(
                 DOMAIN,
                 context={"source": SOURCE_IMPORT},
-                data=config[DOMAIN],
+                data={CONF_ATTR_NAME: num_to_keep},
             )
         )
     return True

@@ -70,14 +70,24 @@ async def test_async_step_import_calls_setup_user(
     result = await hass.config_entries.flow.async_init(
         DOMAIN,
         context={"source": config_entries.SOURCE_IMPORT},
+        data={CONF_ATTR_NAME: 5},
     )
     assert result is not None
-    assert result["type"] == FlowResultType.FORM
-
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={CONF_ATTR_NAME: 3}
-    )
-    assert result["title"] == "clean_up_snapshots_service"
     assert result["type"] == FlowResultType.CREATE_ENTRY
     assert "data" in result
-    assert result["data"][CONF_ATTR_NAME] == 3
+    assert result["data"][CONF_ATTR_NAME] == 5
+
+
+@pytest.mark.asyncio
+async def test_async_step_import_returns_already_configured(
+    hass: HomeAssistant, mock_config_entry: MockConfigEntry
+):
+    mock_config_entry.add_to_hass(hass)
+    result = await hass.config_entries.flow.async_init(
+        DOMAIN,
+        context={"source": config_entries.SOURCE_IMPORT},
+        data={CONF_ATTR_NAME: 5},
+    )
+    assert result is not None
+    assert result["type"] == FlowResultType.ABORT
+    assert result["reason"] == "already_configured"
