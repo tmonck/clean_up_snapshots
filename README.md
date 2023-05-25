@@ -9,9 +9,9 @@ This Home Assistant extension exposes a service to automate the clean up of old 
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
 
 - [Prerequisites](#prerequisites)
-- [HACS installation:](#hacs-installation)
+- [HACS installation](#hacs-installation)
 - [Use in automations](#use-in-automations)
-- [Configuration:](#configuration)
+- [Configuration](#configuration)
 
 <!-- markdown-toc end -->
 
