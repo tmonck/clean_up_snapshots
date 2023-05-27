@@ -14,7 +14,6 @@ This Home Assistant extension exposes a service to automate the clean up of old 
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Configuration](#configuration)
-  - [Config Flow (UI)](#config-flow-ui)
   - [configuration.yaml](#configurationyaml)
 - [Use in automations](#use-in-automations)
 
@@ -40,15 +39,17 @@ or you can install manually with the steps below.
 
 ## Configuration
 
-### Config Flow (UI)
+Adding the Clean up snaphots service can be done via the user interface by using this My button:
+[![Open your Home Assistant instance and start setting up a new integration.][my_config_flow_start_badge]][my_integration_config_flow]
 
-Once again there is an easy button [![Open your Home Assistant instance and start setting up a new integration.][my_config_flow_start_badge]][my_integration_config_flow] or a manual process.
+If the above My button doesn't work, you can also perform the following steps manually:
 
-1. Navigate to Settings > Devices & Services > Integrations
-2. Click the Add Integration button in the bottom right of the screen
-3. Search for "Clean up snapshots service"
-4. Fill out the form
-5. Click Submit
+1. Browse to your Home Assistant instance.
+1. In the sidebar, select [Settings][home_assistant_settings].
+1. From the configuration menu, select [Devices & Services][home_assistant_devices_services]
+1. In the bottom right, select the [Add Integration][my_integration_config_flow] button.
+1. From the list, search and select "Clean up snapshots service".
+1. Follow the instructions on screen to complete the setup.
 
 ### configuration.yaml
 
@@ -90,6 +91,8 @@ action:
 [hacs]: https://hacs.xyz/
 [hacs_badge]: https://img.shields.io/badge/HACS-Default-41BDF5.svg?style=for-the-badge
 [hacs_custom_components]: https://github.com/custom-components/hacs
+[home_assistant_settings]: https://my.home-assistant.io/redirect/config
+[home_assistant_devices_services]: https://my.home-assistant.io/redirect/integrations
 [my_config_flow_start_badge]: https://my.home-assistant.io/badges/config_flow_start.svg
 [my_hacs_repo_badge]: https://my.home-assistant.io/badges/hacs_repository.svg
 [my_integration_config_flow]: https://my.home-assistant.io/redirect/config_flow_start/?domain=clean_up_snapshots_service
