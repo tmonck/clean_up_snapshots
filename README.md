@@ -46,7 +46,7 @@ Once again there is an easy button [![Open your Home Assistant instance and star
 
 1. Navigate to Settings > Devices & Services > Integrations
 2. Click the Add Integration button in the bottom right of the screen
-3. Search for "Clean up your snapshots"
+3. Search for "Clean up snapshots service"
 4. Fill out the form
 5. Click Submit
 
