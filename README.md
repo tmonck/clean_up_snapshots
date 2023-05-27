@@ -1,6 +1,6 @@
 # Clean up snapshots
 
-[![hacs_badge][hacs_badge]][hacs_default_components]
+[![hacs_badge][hacs_badge]][hacs_custom_components]
 [![Code style][code_style_badge]][code_style_repo]
 
 [![CI][build_badge]][build_workflow]
@@ -30,7 +30,7 @@ To manage the installation and upgrades easier it's recommendated to use [HACS][
 
 ## Installation
 
-You can either use the easy button [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=tmonck&repository=clean_up_snapshots&category=integration)
+You can either use the easy button [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.][my_hacs_repo_badge]][my_integration_lookup]
 or you can install manually with the steps below.
 
 1. Navigate to HACS Store
@@ -42,7 +42,7 @@ or you can install manually with the steps below.
 
 ### Config Flow (UI)
 
-Once again there is an easy button [![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=clean_up_snapshots_service) or a manual process.
+Once again there is an easy button [![Open your Home Assistant instance and start setting up a new integration.][my_config_flow_start_badge]][my_integration_config_flow] or a manual process.
 
 1. Navigate to Settings > Devices & Services > Integrations
 2. Click the Add Integration button in the bottom right of the screen
@@ -83,13 +83,17 @@ action:
       # number_of_snapshots_to_keep: 7
 ```
 
-[supervisor]: https://www.home-assistant.io/integrations/hassio
-[hacs]: https://hacs.xyz/
-[hacs_default_components]: https://github.com/custom-components/hacs
-[hacs_badge]: https://img.shields.io/badge/HACS-Default-41BDF5.svg?style=for-the-badge
-[code_style_badge]: https://img.shields.io/badge/code%20style-black-000000.svg?style=for-the-badge
-[code_style_repo]: https://github.com/psf/black
 [build_badge]: https://img.shields.io/github/actions/workflow/status/tmonck/clean_up_snapshots/ci.yml?style=for-the-badge
 [build_workflow]: https://github.com/tmonck/clean_up_snapshots/actions/workflows/ci.yml
+[code_style_badge]: https://img.shields.io/badge/code%20style-black-000000.svg?style=for-the-badge
+[code_style_repo]: https://github.com/psf/black
+[hacs]: https://hacs.xyz/
+[hacs_badge]: https://img.shields.io/badge/HACS-Default-41BDF5.svg?style=for-the-badge
+[hacs_custom_components]: https://github.com/custom-components/hacs
+[my_config_flow_start_badge]: https://my.home-assistant.io/badges/config_flow_start.svg
+[my_hacs_repo_badge]: https://my.home-assistant.io/badges/hacs_repository.svg
+[my_integration_config_flow]: https://my.home-assistant.io/redirect/config_flow_start/?domain=clean_up_snapshots_service
+[my_integration_lookup]: https://my.home-assistant.io/redirect/hacs_repository/?owner=tmonck&repository=clean_up_snapshots&category=integration
 [release_badge]: https://img.shields.io/github/v/release/tmonck/clean_up_snapshots?color=41BDF5&style=for-the-badge
 [releases_page]: https://github.com/tmonck/clean_up_snapshots/releases
+[supervisor]: https://www.home-assistant.io/integrations/hassio
