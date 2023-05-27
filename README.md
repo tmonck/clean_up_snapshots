@@ -42,7 +42,7 @@ or you can install manually with the steps below.
 
 ### Config Flow (UI)
 
-Once again there is an easy button [![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg](https://my.home-assistant.io/redirect/config_flow_start/?domain=clean_up_snapshots_service) or a manual process.
+Once again there is an easy button [![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=clean_up_snapshots_service) or a manual process.
 
 1. Navigate to Settings > Devices & Services > Integrations
 2. Click the Add Integration button in the bottom right of the screen
