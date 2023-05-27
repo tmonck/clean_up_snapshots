@@ -1,6 +1,6 @@
 # Clean up snapshots
 
-[![hacs_badge](https://img.shields.io/badge/HACS-Default-41BDF5.svg?style=for-the-badge)](https://github.com/custom-components/hacs)
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-41BDF5.svg?style=for-the-badge)][hacs_default_components]
 [![Code style](https://img.shields.io/badge/code%20style-black-000000.svg?style=for-the-badge)](https://github.com/psf/black)
 
 [![CI](https://img.shields.io/github/actions/workflow/status/tmonck/clean_up_snapshots/ci.yml?style=for-the-badge)](https://github.com/tmonck/clean_up_snapshots/actions/workflows/ci.yml)
@@ -24,9 +24,9 @@ This Home Assistant extension exposes a service to automate the clean up of old 
 
 To be able to use this extension you must must have the following integrations enabled and configured within your Home Assistant installation.
 
-- [Supervisor][0]
+- [Supervisor][supervisor]
 
-To manage the installation and upgrades easier it's recommendated to use [HACS][1].
+To manage the installation and upgrades easier it's recommendated to use [HACS][hacs].
 
 ## Installation
 
@@ -83,5 +83,6 @@ action:
       # number_of_snapshots_to_keep: 7
 ```
 
-[0]: https://www.home-assistant.io/integrations/hassio
-[1]: https://hacs.xyz/
+[supervisor]: https://www.home-assistant.io/integrations/hassio
+[hacs]: https://hacs.xyz/
+[hacs_default_components]: https://github.com/custom-components/hacs
