@@ -10,10 +10,13 @@ This Home Assistant extension exposes a service to automate the clean up of old 
 
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
 
+- [Clean up snapshots](#clean-up-snapshots)
 - [Prerequisites](#prerequisites)
-- [HACS installation](#hacs-installation)
-- [Use in automations](#use-in-automations)
+- [Installation](#installation)
 - [Configuration](#configuration)
+  - [Config Flow (UI)](#config-flow-ui)
+  - [configuration.yaml](#configurationyaml)
+- [Use in automations](#use-in-automations)
 
 <!-- markdown-toc end -->
 
@@ -25,28 +28,41 @@ To be able to use this extension you must must have the following integrations e
 
 To manage the installation and upgrades easier it's recommendated to use [HACS][1].
 
-## HACS installation
+## Installation
 
 You can either use the easy button [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=tmonck&repository=clean_up_snapshots&category=integration)
-or you can install manually.
+or you can install manually with the steps below.
 
 1. Navigate to HACS Store
 2. Search for "Clean up snapshots service"
 3. Click on the service, and then on _DOWNLOAD_
-4. Restart Home Assistant (Settings > System > Restart)
-5. Add the integration via one of the options below:
-    1. Add it via the Settings > Devices & Services > ...
-    2. Add the following to your configuration.yaml:
-        > **Warning**
-        > The setup via the configuration.yaml file is being deprecated and will be removed in a future release.
+4. Restart Home Assistant
 
-          ```yaml
-          clean_up_snapshots_service:
-            number_of_snapshots_to_keep: 3 # optional, default value is 0
-          ```
+## Configuration
 
-6. Restart Home Assistant (Settings > System > Restart)
-7. Look for the new `clean_up_snapshots_service.clean_up` service (Developer Tools > Services).
+### Config Flow (UI)
+
+Once again there is an easy button [![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg](https://my.home-assistant.io/redirect/config_flow_start/?domain=clean_up_snapshots_service) or a manual process.
+
+1. Navigate to Settings > Devices & Services > Integrations
+2. Click the Add Integration button in the bottom right of the screen
+3. Search for "Clean up your snapshots"
+4. Fill out the form
+5. Click Submit
+
+### configuration.yaml
+
+> **Warning**
+> The setup via the configuration.yaml file is being deprecated and will be removed in a future release.
+Add the following to your configuration.yaml file. Adjust the value number snapshots you want to keep.
+
+```yaml
+clean_up_snapshots_service:
+  number_of_snapshots_to_keep: 3 # optional, default value is 0
+```
+
+1. Restart Home Assistant (Settings > System > Restart)
+2. Look for the new `clean_up_snapshots_service.clean_up` service (Developer Tools > Services).
 
 ## Use in automations
 
@@ -66,12 +82,6 @@ action:
       # If this property is passed to the service it will be used regardless of what you have in the configuration.yaml
       # number_of_snapshots_to_keep: 7
 ```
-
-## Configuration
-
-When configuring this plugin you will need to define a the following parameter:
-
-`number_of_snapshots_to_keep:` - (Optional) The number of snapshots you wish to retain, default is 0 (retain all)
 
 [0]: https://www.home-assistant.io/integrations/hassio
 [1]: https://hacs.xyz/
