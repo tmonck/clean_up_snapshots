@@ -40,6 +40,7 @@ or you can install manually with the steps below.
 ## Configuration
 
 Adding the Clean up snaphots service can be done via the user interface by using this My button:
+
 [![Open your Home Assistant instance and start setting up a new integration.][my_config_flow_start_badge]][my_integration_config_flow]
 
 If the above My button doesn't work, you can also perform the following steps manually:
