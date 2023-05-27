@@ -57,7 +57,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         _LOGGER.error("You must be running Supervisor for this integraion to work.")
         return False
 
-    options = {"num_snapshots_to_keep": entry.options.get(CONF_ATTR_NAME, DEFAULT_NUM)}
+    options = {CONF_ATTR_NAME: entry.data.get(CONF_ATTR_NAME, DEFAULT_NUM)}
 
     cleanup_snapshots = CleanUpSnapshots(hass, options)
 
@@ -141,7 +141,9 @@ class CleanUpSnapshots:
 
     async def async_handle_clean_up(self, call):
         # Allow the service call override the configuration.
-        num_to_keep = call.data.get(CONF_ATTR_NAME, DEFAULT_NUM)
+        num_to_keep = call.data.get(
+            CONF_ATTR_NAME, self._options.get(CONF_ATTR_NAME, DEFAULT_NUM)
+        )
         _LOGGER.info("Number of snapshots we are going to keep: %s", str(num_to_keep))
 
         if num_to_keep == 0:
@@ -154,7 +156,11 @@ class CleanUpSnapshots:
         _LOGGER.debug("Snapshots: %s", snapshots)
 
         # filter the snapshots
+
         if snapshots is not None:
+            if len(snapshots) <= num_to_keep:
+                _LOGGER.info("Backup count below the desired count %d" % num_to_keep)
+                return
             for snapshot in snapshots:
                 d = parse(snapshot["date"], ignoretz=False)
                 if d.tzinfo is None or d.tzinfo is not tzutc():

@@ -195,7 +195,7 @@ async def test_async_remove_snapshots_logs_error_and_raises(
         status=HTTPStatus.BAD_REQUEST,
         headers=headers,
     )
-    thing = CleanUpSnapshots(hass, None)
+    thing = CleanUpSnapshots(hass, {})
     try:
         _ = await thing.async_remove_snapshots(backups)
     except HassioAPIError as err:
@@ -225,8 +225,25 @@ async def test_async_handle_clean_up_call(
     for backup in backups[3:]:
         backup_slugs.append(backup["slug"])
     await setup_supervisor_integration(aioclient_mock, backup_slugs)
-    thing = CleanUpSnapshots(hass, None)
+    thing = CleanUpSnapshots(hass, {})
     call = ServiceCall(DOMAIN, "clean_up", {"number_of_snapshots_to_keep": 3})
+    await thing.async_handle_clean_up(call)
+    assert aioclient_mock.call_count == len(backup_slugs)
+
+
+@pytest.mark.asyncio
+@patch.object(CleanUpSnapshots, "async_get_snapshots", mock_get_snapshots)
+async def test_async_handle_clean_up_call_uses_configured_value(
+    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker
+):
+    backups = json.loads(load_fixture("backups.json"))["data"]["backups"]
+    backups.sort(key=lambda item: parse(item["date"]), reverse=True)
+    backup_slugs = []
+    for backup in backups[3:]:
+        backup_slugs.append(backup["slug"])
+    await setup_supervisor_integration(aioclient_mock, backup_slugs)
+    thing = CleanUpSnapshots(hass, {"number_of_snapshots_to_keep": 3})
+    call = ServiceCall(DOMAIN, "clean_up")
     await thing.async_handle_clean_up(call)
     assert aioclient_mock.call_count == len(backup_slugs)
 
@@ -240,7 +257,7 @@ mock_get_snapshots.return_value = None
 async def test_async_handle_clean_up_call_only_logs_once(
     hass: HomeAssistant, aioclient_mock: AiohttpClientMocker, caplog
 ):
-    thing = CleanUpSnapshots(hass, None)
+    thing = CleanUpSnapshots(hass, {})
     call = ServiceCall(DOMAIN, "clean_up", {"number_of_snapshots_to_keep": 0})
     await thing.async_handle_clean_up(call)
     assert aioclient_mock.call_count == 0
@@ -255,16 +272,35 @@ async def test_async_handle_clean_up_call_only_logs_once(
 
 @pytest.mark.asyncio
 @patch.object(CleanUpSnapshots, "async_get_snapshots", mock_get_snapshots)
+async def test_async_handle_clean_up_call_only_logs_when_backups_none(
+    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker, caplog
+):
+    thing = CleanUpSnapshots(hass, {})
+    call = ServiceCall(DOMAIN, "clean_up", {"number_of_snapshots_to_keep": 3})
+    await thing.async_handle_clean_up(call)
+    assert aioclient_mock.call_count == 0
+    assert mock_get_snapshots.call_count == 0
+    for record in caplog.records:
+        if record.levelname == "INFO":
+            assert "No snapshots found" in caplog.text
+
+
+mock_get_snapshots = AsyncMock()
+mock_get_snapshots.return_value = []
+
+
+@pytest.mark.asyncio
+@patch.object(CleanUpSnapshots, "async_get_snapshots", mock_get_snapshots)
 async def test_async_handle_clean_up_call_only_logs(
     hass: HomeAssistant, aioclient_mock: AiohttpClientMocker, caplog
 ):
-    thing = CleanUpSnapshots(hass, None)
+    thing = CleanUpSnapshots(hass, {})
     call = ServiceCall(DOMAIN, "clean_up", {"number_of_snapshots_to_keep": 3})
     await thing.async_handle_clean_up(call)
     assert aioclient_mock.call_count == 0
     for record in caplog.records:
         if record.levelname == "INFO":
-            assert "No snapshots found." in caplog.text
+            assert "Backup count below the desired count" in caplog.text
 
 
 mock_get_snapshots = AsyncMock()
@@ -285,7 +321,7 @@ async def test_async_handle_clean_up_call_adjusts_date_if_tz_missing(
         backup_slugs.append(backup["slug"])
     await setup_supervisor_integration(aioclient_mock, backup_slugs)
     with patch.object(CleanUpSnapshots, "async_get_snapshots", mock_get_snapshots):
-        thing = CleanUpSnapshots(hass, None)
+        thing = CleanUpSnapshots(hass, {})
         call = ServiceCall(DOMAIN, "clean_up", {"number_of_snapshots_to_keep": 1})
         await thing.async_handle_clean_up(call)
     assert aioclient_mock.call_count == 2
