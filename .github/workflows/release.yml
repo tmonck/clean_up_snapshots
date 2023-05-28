@@ -1,0 +1,26 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+defaults:
+  run:
+    working-directory: custom_components/clean_up_snapshots_service
+
+jobs:
+  publish:
+    name: "Publish"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: "Update version"
+        run: |
+          current_version="$(jq --raw-output .version manifest.json | sed 's/\./\\./g')"
+          sed -i s/$current_version/${{ github.event.release.tag_name }}/ manifest.json
+      - name: "Zip up"
+        run: |
+          zip clean_up_snapshots.zip -r ./
+      - name: "Upload zip to release"
+        run: |
+          gh release upload ${{ github.event.release.tag_name }} clean_up_snapshots.zip
