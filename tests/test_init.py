@@ -44,8 +44,17 @@ async def test_async_setup_always_returns_true(hass: HomeAssistant, config):
 async def test_async_setup_entry(hass: HomeAssistant, return_value):
     is_hassio = MagicMock()
     is_hassio.return_value = return_value
+    config_entry_ver = 1
+    num_backups_to_keep = 3
     with patch("custom_components.clean_up_snapshots_service.is_hassio", is_hassio):
-        entry = ConfigEntry(1, DOMAIN, "", {}, None, options={CONF_ATTR_NAME: 3})
+        entry = ConfigEntry(
+            config_entry_ver,
+            DOMAIN,
+            "",
+            {},
+            None,
+            options={CONF_ATTR_NAME: num_backups_to_keep},
+        )
         result = await async_setup_entry(hass, entry)
     assert result is return_value
 
@@ -214,6 +223,7 @@ async def test_async_remove_snapshots_logs_error_and_raises(
 async def test_async_handle_clean_up_call(
     hass: HomeAssistant, aioclient_mock: AiohttpClientMocker
 ):
+    num_backups_to_keep = 3
     mock_get_snapshots = AsyncMock()
     backups = json.loads(load_fixture("backups.json"))["data"]["backups"]
     mock_get_snapshots.return_value = backups
@@ -224,7 +234,7 @@ async def test_async_handle_clean_up_call(
     await setup_supervisor_integration(aioclient_mock, backup_slugs)
     with patch.object(CleanUpSnapshots, "async_get_snapshots", mock_get_snapshots):
         thing = CleanUpSnapshots(hass, {})
-        call = ServiceCall(DOMAIN, "clean_up", {CONF_ATTR_NAME: 3})
+        call = ServiceCall(DOMAIN, "clean_up", {CONF_ATTR_NAME: num_backups_to_keep})
         await thing.async_handle_clean_up(call)
     assert aioclient_mock.call_count == len(backup_slugs)
 
