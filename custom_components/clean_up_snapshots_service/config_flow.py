@@ -14,13 +14,13 @@ _LOGGER = logging.getLogger(__name__)
 
 def _get_schema(config_entry: config_entries.ConfigEntry | None = None) -> vol.Schema:
     if config_entry is not None:
-        num_to_keep_from_options = config_entry.options.get(CONF_ATTR_NAME, DEFAULT_NUM)
-        _LOGGER.info("num_to_keep_from_options %d" % num_to_keep_from_options)
+        num_to_keep_from_data = config_entry.data.get(CONF_ATTR_NAME, DEFAULT_NUM)
+        _LOGGER.info("num_to_keep_from_data %d" % num_to_keep_from_data)
         return vol.Schema(
             {
                 vol.Optional(
                     CONF_ATTR_NAME,
-                    default=config_entry.options.get(CONF_ATTR_NAME, DEFAULT_NUM),
+                    default=config_entry.data.get(CONF_ATTR_NAME, DEFAULT_NUM),
                 ): int,
             }
         )
