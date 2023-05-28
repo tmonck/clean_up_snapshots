@@ -85,13 +85,15 @@ class CleanUpSnapshots:
             data = await resp.json()
             return data["data"]["backups"]
         except aiohttp.ClientError as err:
-            _LOGGER.error("Client error on calling get snapshots", exc_info=True)
+            _LOGGER.error("Client error on calling GET /backups", exc_info=True)
             raise HassioAPIError("Client error on calling GET /backups %s" % err)
         except asyncio.TimeoutError:
-            _LOGGER.error("Client timeout error on get snapshots", exc_info=True)
+            _LOGGER.error("Client timeout error on GET /backups", exc_info=True)
             raise HassioAPIError("Client timeout on GET /backups")
         except Exception as err:
-            _LOGGER.error("Unknown exception thrown", exc_info=True)
+            _LOGGER.error(
+                "Unknown exception thrown when calling GET /backups", exc_info=True
+            )
             raise HassioAPIError(
                 "Unknown exception thrown when calling GET /backups %s" % err
             )
@@ -119,19 +121,20 @@ class CleanUpSnapshots:
                     )
 
             except aiohttp.ClientError as err:
-                _LOGGER.error("Client error on calling delete snapshot", exc_info=True)
+                _LOGGER.error("Client error on calling DELETE /backups", exc_info=True)
                 raise HassioAPIError(
                     "Client error on calling DELETE /backups/%s %s"
                     % (snapshot["slug"], err)
                 )
             except asyncio.TimeoutError:
-                _LOGGER.error("Client timeout error on delete snapshot", exc_info=True)
+                _LOGGER.error("Client timeout error on DELETE /backups", exc_info=True)
                 raise HassioAPIError(
                     "Client timeout on DELETE /backups/%s" % snapshot["slug"]
                 )
             except Exception as err:
                 _LOGGER.error(
-                    "Unknown exception thrown on calling delete snapshot",
+                    "Unknown exception thrown when calling DELETE /backups/%s"
+                    % snapshot["slug"],
                     exc_info=True,
                 )
                 raise HassioAPIError(

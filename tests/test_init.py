@@ -80,17 +80,17 @@ async def test_async_get_snapshots(
         (
             asyncio.TimeoutError,
             "Client timeout on GET /backups",
-            "timeout error on get snapshots",
+            "timeout error on GET /backups",
         ),
         (
             aiohttp.ClientError,
             "Client error on calling GET /backups",
-            "Client error on calling get snapshots",
+            "Client error on calling GET /backups",
         ),
         (
             Exception,
-            "Unknown exception thrown when calling GET /backup",
-            "Unknown exception throw",
+            "Unknown exception thrown when calling GET /backups",
+            "Unknown exception thrown when calling GET /backups",
         ),
     ],
 )
@@ -173,17 +173,17 @@ async def test_async_remove_snapshots_logs_warning_when_delete_fails(
         (
             asyncio.TimeoutError,
             "Client timeout on DELETE /backups",
-            "timeout error on delete snapshot",
+            "timeout error on DELETE /backups",
         ),
         (
             aiohttp.ClientError,
             "Client error on calling DELETE /backups",
-            "Client error on calling delete snapshot",
+            "Client error on calling DELETE /backups",
         ),
         (
             Exception,
-            "Unknown exception thrown when calling DELETE /backup",
-            "Unknown exception throw",
+            "Unknown exception thrown when calling DELETE /backups",
+            "Unknown exception thrown when calling DELETE /backups",
         ),
     ],
 )
