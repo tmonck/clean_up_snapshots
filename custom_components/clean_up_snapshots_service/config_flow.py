@@ -53,12 +53,13 @@ class CleanUpBackupsFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         return await self._show_config_form()
 
     async def async_step_import(self, user_input):
+        """import step of config flow"""
         _LOGGER.info("Importing config entry form configuration.yaml")
         _LOGGER.info(user_input)
         if self._async_current_entries():
             return self.async_abort(reason="already_configured")
 
-        return self.async_create_entry(title=DOMAIN, data={}, options=user_input)
+        return self.async_create_entry(title=DOMAIN, data=user_input)
 
     async def _show_config_form(self):
         return self.async_show_form(
@@ -77,6 +78,8 @@ class CleanUpBackupsFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
 
 class CleanUpBackupsOptionsFlowHandler(config_entries.OptionsFlow):
+    """OptionsFlowHandler for Clean Up Backups Service"""
+
     def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
         """Initialize options flow."""
         self._config_entry = config_entry

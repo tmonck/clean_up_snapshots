@@ -50,8 +50,8 @@ async def test_async_step_import_creates_entry(hass: HomeAssistant):
     )
     assert result is not None
     assert result["type"] == FlowResultType.CREATE_ENTRY
-    assert "options" in result
-    assert result["options"][CONF_ATTR_NAME] == 5
+    assert "data" in result
+    assert result["data"][CONF_ATTR_NAME] == 5
 
 
 @pytest.mark.asyncio
