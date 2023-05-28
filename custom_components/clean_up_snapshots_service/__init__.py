@@ -54,7 +54,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType):
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     # check for supervisor
     if not is_hassio(hass):
-        _LOGGER.error("You must be running Supervisor for this integraion to work.")
+        _LOGGER.error("You must be running Supervisor for this integration to work.")
         return False
 
     options = {CONF_ATTR_NAME: entry.data.get(CONF_ATTR_NAME, DEFAULT_NUM)}

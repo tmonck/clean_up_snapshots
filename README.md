@@ -21,11 +21,11 @@ This Home Assistant extension exposes a service to automate the clean up of old 
 
 ## Prerequisites
 
-To be able to use this extension you must must have the following integrations enabled and configured within your Home Assistant installation.
+To be able to use this extension you must have the following integrations enabled and configured within your Home Assistant installation.
 
 - [Supervisor][supervisor]
 
-To manage the installation and upgrades easier it's recommendated to use [HACS][hacs].
+To manage the installation and upgrades easier it's recommended to use [HACS][hacs].
 
 ## Installation
 
