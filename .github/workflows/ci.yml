@@ -1,5 +1,4 @@
 name: CI
-
 on:
   push:
     branches: [ master ]
@@ -29,6 +28,8 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: 3.10
+      - name: Install requirements
+        run: pip install -r requirements.test.txt
       - name: Run unittests
         run: pytest tests --cov=custom_components --cov-branch --cov-report xml
       - name: Code Coverage Summary Report
@@ -37,6 +38,7 @@ jobs:
           filename: coverage.xml
           fail_below_min: true
           hide_complexity: true
+          thresholds: '90 100'
       - name: Add Test Summary
         run: |
           cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
