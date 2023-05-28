@@ -39,6 +39,7 @@ jobs:
           fail_below_min: true
           hide_complexity: true
           thresholds: '90 100'
+          output: file
       - name: Add Test Summary
         run: |
           cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
