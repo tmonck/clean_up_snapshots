@@ -1,0 +1,27 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "Clean Up Backups Service",
+                "description": "A simple service to keep the number of backups manageable",
+                "data": {
+                    "number_of_snapshots_to_keep": "Number of Backups to keep"
+                }
+            }
+        },
+        "abort": {
+            "already_configured": "Only one instance of Clean Up Snapshots Service is allowed."
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Clean Up Backups Service",
+                "description": "A simple service to keep the number of backups manageable",
+                "data": {
+                    "number_of_snapshots_to_keep": "Number of Backups to keep"
+                }
+            }
+        }
+    }
+}

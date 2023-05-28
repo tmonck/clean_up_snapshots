@@ -1,0 +1,104 @@
+{
+  "data": {
+    "backups": [
+      {
+        "slug": "skuwe800",
+        "date": "2020-09-01T20:25:34.273Z",
+        "name": "Awesome backup 2020-09-01",
+        "type": "full",
+        "size": 44,
+        "protected": true,
+        "compressed": true,
+        "content": {
+          "homeassistant": true,
+          "addons": ["awesome_addon"],
+          "folders": ["share", "addons/local", "ssl", "media"]
+        }
+      },
+      {
+        "slug": "skuwe801",
+        "date": "2020-09-02T20:25:34.273Z",
+        "name": "Awesome backup 2020-09-02",
+        "type": "full",
+        "size": 44,
+        "protected": true,
+        "compressed": true,
+        "content": {
+          "homeassistant": true,
+          "addons": ["awesome_addon"],
+          "folders": ["share", "addons/local", "ssl", "media"]
+        }
+      },
+      {
+        "slug": "skuwe802",
+        "date": "2020-09-03T20:25:34.273Z",
+        "name": "Awesome backup 2020-09-03",
+        "type": "full",
+        "size": 44,
+        "protected": true,
+        "compressed": true,
+        "content": {
+          "homeassistant": true,
+          "addons": ["awesome_addon"],
+          "folders": ["share", "addons/local", "ssl", "media"]
+        }
+      },
+      {
+        "slug": "skuwe803",
+        "date": "2020-09-04T20:25:34.273Z",
+        "name": "Awesome backup 2020-09-04",
+        "type": "full",
+        "size": 44,
+        "protected": true,
+        "compressed": true,
+        "content": {
+          "homeassistant": true,
+          "addons": ["awesome_addon"],
+          "folders": ["share", "addons/local", "ssl", "media"]
+        }
+      },
+      {
+        "slug": "skuwe804",
+        "date": "2020-09-05T20:25:34.273Z",
+        "name": "Awesome backup 2020-09-05",
+        "type": "full",
+        "size": 44,
+        "protected": true,
+        "compressed": true,
+        "content": {
+          "homeassistant": true,
+          "addons": ["awesome_addon"],
+          "folders": ["share", "addons/local", "ssl", "media"]
+        }
+      },
+      {
+        "slug": "skuwe805",
+        "date": "2020-09-06T20:25:34.273Z",
+        "name": "Awesome backup 2020-09-06",
+        "type": "full",
+        "size": 44,
+        "protected": true,
+        "compressed": true,
+        "content": {
+          "homeassistant": true,
+          "addons": ["awesome_addon"],
+          "folders": ["share", "addons/local", "ssl", "media"]
+        }
+      },
+      {
+        "slug": "skuwe806",
+        "date": "2020-09-07T20:25:34.273Z",
+        "name": "Awesome backup 2020-09-07",
+        "type": "full",
+        "size": 44,
+        "protected": true,
+        "compressed": true,
+        "content": {
+          "homeassistant": true,
+          "addons": ["awesome_addon"],
+          "folders": ["share", "addons/local", "ssl", "media"]
+        }
+      }
+    ]
+  }
+}

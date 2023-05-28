@@ -1,4 +1,6 @@
-## Installation instructions:
+# Cleanup Snapshots
+
+## Installation instructions
 
 1. Install HACS for Home Assistant
 2. Navigate to HACS Store
@@ -25,7 +27,9 @@
 10. Look for the new `clean_up_snapshots_service.clean_up` service (Developer Tools > Services).
 
 ## Consumption in automations
+
 You can trigger this service in an automation similarly to the one below.
+
 ```yaml
 alias: Daily snapshot clean up
 initial_state: 'on'
@@ -40,5 +44,6 @@ action:
       # If this property is passed to the service it will be used regardless of what you have in the configuration.yaml
       # number_of_backups_to_keep: 7
 ```
+
 ---
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)

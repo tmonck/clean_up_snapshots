@@ -1,7 +1,9 @@
 {
     "domain": "clean_up_snapshots_service",
-    "name": "Clean up your snapshots",
+    "name": "Clean up snapshots service",
+    "after_dependencies": ["default_config", "backup", "hassio"],
     "codeowners": ["@tmonck"],
+    "config_flow": true,
     "dependencies": [],
     "documentation": "https://github.com/tmonck/clean_up_snapshots",
     "iot_class": "local_push",
