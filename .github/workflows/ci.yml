@@ -36,10 +36,11 @@ jobs:
         uses: irongut/CodeCoverageSummary@v1.3.0
         with:
           filename: coverage.xml
+          format: markdown
           fail_below_min: true
           hide_complexity: true
           thresholds: '90 100'
-          output: file
+          output: both
       - name: Add Test Summary
         run: |
           cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
