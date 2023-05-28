@@ -156,7 +156,6 @@ class CleanUpSnapshots:
         _LOGGER.debug("Snapshots: %s", snapshots)
 
         # filter the snapshots
-
         if snapshots is not None:
             if len(snapshots) <= num_to_keep:
                 _LOGGER.info("Backup count below the desired count %d" % num_to_keep)
