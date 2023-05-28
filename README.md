@@ -1,6 +1,6 @@
 # Clean up snapshots
 
-[![hacs_badge][hacs_badge]][hacs_custom_components]
+[![HACS Badge][hacs_badge]][hacs_custom_components]
 [![Code style][code_style_badge]][code_style_repo]
 
 [![CI][build_badge]][build_workflow]
