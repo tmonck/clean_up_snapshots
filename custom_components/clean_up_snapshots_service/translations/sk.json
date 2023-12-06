@@ -1,0 +1,27 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "Clean Up Backups služba",
+                "description": "Jednoduchá služba na spravovanie počtu záloh",
+                "data": {
+                    "number_of_snapshots_to_keep": "Počet záloh, ktoré sa majú ponechať"
+                }
+            }
+        },
+        "abort": {
+            "already_configured": "Povolená je iba jedna inštancia služby Clean Up Snapshots Service."
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Clean Up Backups služba",
+                "description": "Jednoduchá služba na spravovanie počtu záloh",
+                "data": {
+                    "number_of_snapshots_to_keep": "Počet záloh, ktoré sa majú ponechať"
+                }
+            }
+        }
+    }
+}
