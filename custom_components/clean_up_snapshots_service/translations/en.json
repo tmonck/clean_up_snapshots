@@ -30,6 +30,7 @@
             "description": "Cleans up the snapshots taken by home assistant",
             "fields": {
                 "number_of_snapshots_to_keep": {
+                    "name": "Number of  Backups to keep",
                     "description": "Number of snapshots you wish to keep.",
                     "example": 3
                 }
