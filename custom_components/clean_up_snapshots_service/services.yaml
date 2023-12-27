@@ -1,5 +1,5 @@
 clean_up:
-  description: Cleans up the snapshots taken by home assistant
+  description: A simple service to keep the number of backups manageable,
   fields:
     number_of_snapshots_to_keep:
       description: Number of snapshots you wish to keep.
