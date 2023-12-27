@@ -23,5 +23,18 @@
                 }
             }
         }
+    },
+    "services": {
+        "clean_up": {
+            "title": "Clean Up Backups služba",
+            "description": "Jednoduchá služba na spravovanie počtu záloh",
+            "fields": {
+                "number_of_snapshots_to_keep": {
+                    "name": "Počet záloh, ktoré sa majú ponechať",
+                    "description": "Počet snímok, ktoré si chcete ponechať.",
+                    "example": 3
+                }
+            }
+        }
     }
 }
