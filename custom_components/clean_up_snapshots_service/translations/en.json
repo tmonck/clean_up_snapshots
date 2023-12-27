@@ -23,5 +23,17 @@
                 }
             }
         }
+    },
+    "services": {
+        "clean_up": {
+            "name": "Clean Up Backups Services",
+            "description": "Cleans up the snapshots taken by home assistant",
+            "fields": {
+                "number_of_snapshots_to_keep": {
+                    "description": "Number of snapshots you wish to keep.",
+                    "example": 3
+                }
+            }
+        }
     }
 }
