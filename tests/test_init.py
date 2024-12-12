@@ -48,11 +48,14 @@ async def test_async_setup_entry(hass: HomeAssistant, return_value):
     num_backups_to_keep = 3
     with patch("custom_components.clean_up_snapshots_service.is_hassio", is_hassio):
         entry = ConfigEntry(
-            config_entry_ver,
-            DOMAIN,
-            "",
-            {},
-            None,
+            version=config_entry_ver,
+            minor_version=0,
+            source=None,
+            domain=DOMAIN,
+            title="",
+            data={},
+            unique_id=None,
+            discovery_keys=None,
             options={CONF_ATTR_NAME: num_backups_to_keep},
         )
         result = await async_setup_entry(hass, entry)

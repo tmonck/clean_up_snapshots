@@ -12,10 +12,11 @@ import pytz
 import voluptuous as vol
 from dateutil.parser import parse
 from dateutil.tz import tzutc
-from homeassistant.components.hassio import HassioAPIError, is_hassio
+from homeassistant.components.hassio import HassioAPIError
 from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import aiohttp_client
+from homeassistant.helpers.hassio import is_hassio
 from homeassistant.helpers.typing import ConfigType
 
 from .const import BACKUPS_URL_PATH, CONF_ATTR_NAME, DEFAULT_NUM, DOMAIN, SUPERVISOR_URL
@@ -78,7 +79,7 @@ class CleanUpSnapshots:
     async def async_get_snapshots(self):
         _LOGGER.info("Calling get snapshots")
         try:
-            with async_timeout.timeout(10):
+            async with async_timeout.timeout(10):
                 resp = await self._client_session.get(
                     SUPERVISOR_URL + BACKUPS_URL_PATH, headers=self._headers
                 )
@@ -92,7 +93,7 @@ class CleanUpSnapshots:
             raise HassioAPIError("Client timeout on GET /backups")
         except Exception as err:
             _LOGGER.error(
-                "Unknown exception thrown when calling GET /backups", exc_info=True
+                "Unknown exception thrown when calling GET /backups ", exc_info=True
             )
             raise HassioAPIError(
                 "Unknown exception thrown when calling GET /backups %s" % err
@@ -104,7 +105,7 @@ class CleanUpSnapshots:
 
             # call hassio API deletion
             try:
-                with async_timeout.timeout(10):
+                async with async_timeout.timeout(10):
                     resp = await self._client_session.delete(
                         SUPERVISOR_URL + f"{BACKUPS_URL_PATH}/" + snapshot["slug"],
                         headers=self._headers,
