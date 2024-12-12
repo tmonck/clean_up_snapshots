@@ -79,7 +79,7 @@ class CleanUpSnapshots:
     async def async_get_snapshots(self):
         _LOGGER.info("Calling get snapshots")
         try:
-            with async_timeout.timeout(10):
+            async with async_timeout.timeout(10):
                 resp = await self._client_session.get(
                     SUPERVISOR_URL + BACKUPS_URL_PATH, headers=self._headers
                 )
@@ -93,7 +93,7 @@ class CleanUpSnapshots:
             raise HassioAPIError("Client timeout on GET /backups")
         except Exception as err:
             _LOGGER.error(
-                "Unknown exception thrown when calling GET /backups", exc_info=True
+                "Unknown exception thrown when calling GET /backups ", exc_info=True
             )
             raise HassioAPIError(
                 "Unknown exception thrown when calling GET /backups %s" % err
@@ -105,7 +105,7 @@ class CleanUpSnapshots:
 
             # call hassio API deletion
             try:
-                with async_timeout.timeout(10):
+                async with async_timeout.timeout(10):
                     resp = await self._client_session.delete(
                         SUPERVISOR_URL + f"{BACKUPS_URL_PATH}/" + snapshot["slug"],
                         headers=self._headers,
