@@ -237,7 +237,9 @@ async def test_async_handle_clean_up_call(
     await setup_supervisor_integration(aioclient_mock, backup_slugs)
     with patch.object(CleanUpSnapshots, "async_get_snapshots", mock_get_snapshots):
         thing = CleanUpSnapshots(hass, {})
-        call = ServiceCall(DOMAIN, "clean_up", {CONF_ATTR_NAME: num_backups_to_keep})
+        call = ServiceCall(
+            hass, DOMAIN, "clean_up", {CONF_ATTR_NAME: num_backups_to_keep}
+        )
         await thing.async_handle_clean_up(call)
     assert aioclient_mock.call_count == len(backup_slugs)
 
@@ -257,7 +259,7 @@ async def test_async_handle_clean_up_call_uses_configured_value(
     await setup_supervisor_integration(aioclient_mock, backup_slugs)
     with patch.object(CleanUpSnapshots, "async_get_snapshots", mock_get_snapshots):
         thing = CleanUpSnapshots(hass, {CONF_ATTR_NAME: num_backups_to_keep})
-        call = ServiceCall(DOMAIN, "clean_up")
+        call = ServiceCall(hass, DOMAIN, "clean_up")
         await thing.async_handle_clean_up(call)
     assert aioclient_mock.call_count == len(backup_slugs)
 
@@ -269,7 +271,7 @@ async def test_async_handle_clean_up_call_only_logs_once(
     mock_get_snapshots = AsyncMock()
     with patch.object(CleanUpSnapshots, "async_get_snapshots", mock_get_snapshots):
         thing = CleanUpSnapshots(hass, {})
-        call = ServiceCall(DOMAIN, "clean_up", {CONF_ATTR_NAME: DEFAULT_NUM})
+        call = ServiceCall(hass, DOMAIN, "clean_up", {CONF_ATTR_NAME: DEFAULT_NUM})
         await thing.async_handle_clean_up(call)
     assert aioclient_mock.call_count == 0
     assert mock_get_snapshots.call_count == 0
@@ -290,7 +292,9 @@ async def test_async_handle_clean_up_call_only_logs_when_backups_none(
     num_backups_to_keep = 3
     with patch.object(CleanUpSnapshots, "async_get_snapshots", mock_get_snapshots):
         thing = CleanUpSnapshots(hass, {})
-        call = ServiceCall(DOMAIN, "clean_up", {CONF_ATTR_NAME: num_backups_to_keep})
+        call = ServiceCall(
+            hass, DOMAIN, "clean_up", {CONF_ATTR_NAME: num_backups_to_keep}
+        )
         await thing.async_handle_clean_up(call)
     assert aioclient_mock.call_count == 0
     assert mock_get_snapshots.call_count == 1
@@ -308,7 +312,9 @@ async def test_async_handle_clean_up_call_only_logs(
     num_backups_to_keep = 3
     with patch.object(CleanUpSnapshots, "async_get_snapshots", mock_get_snapshots):
         thing = CleanUpSnapshots(hass, {})
-        call = ServiceCall(DOMAIN, "clean_up", {CONF_ATTR_NAME: num_backups_to_keep})
+        call = ServiceCall(
+            hass, DOMAIN, "clean_up", {CONF_ATTR_NAME: num_backups_to_keep}
+        )
         await thing.async_handle_clean_up(call)
     assert aioclient_mock.call_count == 0
     for record in caplog.records:
@@ -331,7 +337,9 @@ async def test_async_handle_clean_up_call_adjusts_date_if_tz_missing(
     await setup_supervisor_integration(aioclient_mock, backup_slugs)
     with patch.object(CleanUpSnapshots, "async_get_snapshots", mock_get_snapshots):
         thing = CleanUpSnapshots(hass, {})
-        call = ServiceCall(DOMAIN, "clean_up", {CONF_ATTR_NAME: num_backups_to_keep})
+        call = ServiceCall(
+            hass, DOMAIN, "clean_up", {CONF_ATTR_NAME: num_backups_to_keep}
+        )
         await thing.async_handle_clean_up(call)
     assert aioclient_mock.call_count == 2
     assert mock_get_snapshots.call_count == num_backups_to_keep
