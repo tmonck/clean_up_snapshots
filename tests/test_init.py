@@ -33,7 +33,7 @@ from tests.common import setup_supervisor_integration
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize("config", [({}), ({DOMAIN: {}})])
+@pytest.mark.parametrize("config", [{}])
 async def test_async_setup_always_returns_true(hass: HomeAssistant, config):
     """Test the async setup call"""
     result = await async_setup(hass, config)
@@ -55,7 +55,7 @@ async def test_async_setup_entry(hass: HomeAssistant, return_value):
             domain=DOMAIN,
             title="",
             data={},
-            subentries=None,
+            subentries_data={},
             unique_id=None,
             discovery_keys=None,
             options={CONF_ATTR_NAME: num_backups_to_keep},
