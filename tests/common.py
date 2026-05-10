@@ -1,4 +1,5 @@
 """Common utils"""
+
 import json
 from http import HTTPStatus
 

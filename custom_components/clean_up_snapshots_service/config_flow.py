@@ -1,4 +1,5 @@
 """Adds config flow for clean_up_snapshots"""
+
 import logging
 from typing import Any
 

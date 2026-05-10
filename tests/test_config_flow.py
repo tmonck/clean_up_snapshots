@@ -1,4 +1,5 @@
 """Tests of config_flow.py"""
+
 import asyncio
 
 import pytest

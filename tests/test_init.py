@@ -1,4 +1,5 @@
 """Tests of __init__.py"""
+
 import asyncio
 import json
 import os
@@ -71,7 +72,7 @@ async def test_async_get_snapshots(
     thing = CleanUpSnapshots(hass, None)
     _ = await thing.async_get_snapshots()
     assert aioclient_mock.call_count == 1
-    (method, url, _, headers) = aioclient_mock.mock_calls[0]
+    method, url, _, headers = aioclient_mock.mock_calls[0]
     assert method == "GET"
     assert url == URL(f"%s%s" % (SUPERVISOR_URL, BACKUPS_URL_PATH))
 
@@ -118,7 +119,7 @@ async def test_async_get_snapshots_logs_timeout_error_and_raises(
         assert err is not None
         assert error_message in str(err)
     assert aioclient_mock.call_count == 1
-    (method, url, _, headers) = aioclient_mock.mock_calls[0]
+    method, url, _, headers = aioclient_mock.mock_calls[0]
     assert method == "GET"
     assert url == URL(f"%s%s" % (SUPERVISOR_URL, BACKUPS_URL_PATH))
     for record in caplog.records:
@@ -141,7 +142,7 @@ async def test_async_remove_snapshots_makes_api_call_for_stale_snapshots(
     assert aioclient_mock.call_count == len(backups)
     # All the calls should be a delete verb.
     for mock_call in aioclient_mock.mock_calls:
-        (method, _, _, _) = mock_call
+        method, _, _, _ = mock_call
         assert method == "DELETE"
 
 
@@ -161,7 +162,7 @@ async def test_async_remove_snapshots_logs_warning_when_delete_fails(
     assert aioclient_mock.call_count == len(backups)
     # All the calls should be a delete verb.
     for mock_call in aioclient_mock.mock_calls:
-        (method, _, _, _) = mock_call
+        method, _, _, _ = mock_call
         assert method == "DELETE"
 
     for record in caplog.records:
@@ -215,7 +216,7 @@ async def test_async_remove_snapshots_logs_error_and_raises(
         assert err is not None
         assert error_message in str(err)
     assert aioclient_mock.call_count == 1
-    (method, url, _, headers) = aioclient_mock.mock_calls[0]
+    method, url, _, headers = aioclient_mock.mock_calls[0]
     assert method == "DELETE"
     for record in caplog.records:
         if record.levelname == "ERROR":

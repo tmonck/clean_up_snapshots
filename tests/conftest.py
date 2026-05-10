@@ -1,4 +1,5 @@
 """conftest for clean up snapshots service"""
+
 import pytest_asyncio
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
