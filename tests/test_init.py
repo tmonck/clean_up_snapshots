@@ -9,7 +9,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import aiohttp
 import pytest
 from dateutil.parser import parse
-from homeassistant.components.hassio import HassioAPIError
+from homeassistant.components.hassio.handler import HassioAPIError
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.setup import async_setup_component
@@ -33,7 +33,7 @@ from tests.common import setup_supervisor_integration
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize("config", [({}), ({DOMAIN: {}})])
+@pytest.mark.parametrize("config", [{}])
 async def test_async_setup_always_returns_true(hass: HomeAssistant, config):
     """Test the async setup call"""
     result = await async_setup(hass, config)
@@ -55,6 +55,7 @@ async def test_async_setup_entry(hass: HomeAssistant, return_value):
             domain=DOMAIN,
             title="",
             data={},
+            subentries_data={},
             unique_id=None,
             discovery_keys=None,
             options={CONF_ATTR_NAME: num_backups_to_keep},

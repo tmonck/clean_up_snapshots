@@ -7,13 +7,12 @@ import logging
 import os
 
 import aiohttp
-import async_timeout
 import homeassistant.helpers.config_validation as cv
 import pytz
 import voluptuous as vol
 from dateutil.parser import parse
 from dateutil.tz import tzutc
-from homeassistant.components.hassio import HassioAPIError
+from homeassistant.components.hassio.handler import HassioAPIError
 from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import aiohttp_client
@@ -80,7 +79,7 @@ class CleanUpSnapshots:
     async def async_get_snapshots(self):
         _LOGGER.info("Calling get snapshots")
         try:
-            async with async_timeout.timeout(10):
+            async with asyncio.timeout(10):
                 resp = await self._client_session.get(
                     SUPERVISOR_URL + BACKUPS_URL_PATH, headers=self._headers
                 )
@@ -106,7 +105,7 @@ class CleanUpSnapshots:
 
             # call hassio API deletion
             try:
-                async with async_timeout.timeout(10):
+                async with asyncio.timeout(10):
                     resp = await self._client_session.delete(
                         SUPERVISOR_URL + f"{BACKUPS_URL_PATH}/" + snapshot["slug"],
                         headers=self._headers,
