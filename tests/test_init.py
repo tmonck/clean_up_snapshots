@@ -55,6 +55,7 @@ async def test_async_setup_entry(hass: HomeAssistant, return_value):
             domain=DOMAIN,
             title="",
             data={},
+            subentries=None,
             unique_id=None,
             discovery_keys=None,
             options={CONF_ATTR_NAME: num_backups_to_keep},
