@@ -12,7 +12,7 @@ import pytz
 import voluptuous as vol
 from dateutil.parser import parse
 from dateutil.tz import tzutc
-from homeassistant.components.hassio import HassioAPIError
+from homeassistant.components.hassio.handler import HassioAPIError
 from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import aiohttp_client
