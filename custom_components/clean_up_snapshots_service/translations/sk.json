@@ -32,7 +32,7 @@
                 "number_of_snapshots_to_keep": {
                     "name": "Počet záloh, ktoré sa majú ponechať",
                     "description": "Počet snímok, ktoré si chcete ponechať.",
-                    "example": 3
+                    "example": "3"
                 }
             }
         }

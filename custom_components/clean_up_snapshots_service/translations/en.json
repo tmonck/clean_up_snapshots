@@ -32,7 +32,7 @@
                 "number_of_snapshots_to_keep": {
                     "name": "Number of  Backups to keep",
                     "description": "Number of snapshots you wish to keep.",
-                    "example": 3
+                    "example": "3"
                 }
             }
         }
